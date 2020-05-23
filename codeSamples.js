@@ -181,7 +181,7 @@ import {
 } from './modules/localStorage.js';
 
 // Creating Module objects:
-export { createNewList, buildSavedList, returnSavedList, manageGroceryList }};
+export { createNewList, buildSavedList, returnSavedList, manageGroceryList };
 import * as Storage from './modules/localStorage.js';
 Storage.manageGroceryList('addItem', 'banana', 3);
 
