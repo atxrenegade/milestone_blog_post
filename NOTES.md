@@ -332,4 +332,4 @@ if it’s wrong I blame stack overflwo contributors. Hahhaah, jk
 what about function hoisting
 
 
-
+overseperating concerns - like trying to read the english language in strokes instead of characters
