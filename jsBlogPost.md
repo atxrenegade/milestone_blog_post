@@ -11,7 +11,7 @@ Some of the topics explored in this post:
 • Comparing Variable and Function Behavior and Types
 • Implicit vs Explicit - Rules of Precedence for determining THIS
 • The Principle of Least Exposure (POLE)
-• Review of the Module Pattern
+• Review of the Classic Module Pattern and the ES Module Format
 
 ## Correcting Distorted Mental Models 
 
@@ -21,10 +21,7 @@ I am a full picture person, I retain details best when I have a complete picture
 
 ## Compiled vs Interpreted
 
-For machines to understand high level languages like JavaScript the code must be translated or complied into to machine code. Compilation is a process in which the compiler converts higher level source code into an machine language executable file in a build step before runtime. 
-Interpreted languages are translated at runtime line by line while the source code is converted to machine code during execution.
-
-There are arguments for and against each format. Compiled code is faster to execute because the build step occurs prior to runtime, the entire program has already been checked for errors and the work of converting to machine code is already complete. Interpreted code is more flexible to correct, it runs line by line, often displaying errors as they occur, and takes less memory.
+For machines to understand high level languages like JavaScript the code must be translated or complied into to machine code. Compilation is a process in which the compiler converts higher level source code into an machine language executable file in a build step before runtime. Interpreted languages are translated at runtime line by line while the source code is converted to machine code during execution. There are arguments for and against each format. Compiled code is faster to execute because the build step occurs prior to runtime, the entire program has already been checked for errors and the work of converting to machine code is already complete. Interpreted code is more flexible to correct, it runs line by line, often displaying errors as they occur, and takes less memory.
 
 But why do we care? Isn't JavaScript an interpreted language? It was... in the beginning, but modern day JavaScript engines use a refined combination of compilation and interpretation commonly referred to as just-in-time compilation (aka JIT compilation). Understanding the way our code is processed during compilation and execution will help us get a clearer understanding of scopes, variables and their behavior, and of when these objects are determined and available for use in our code. By having a deeper understanding of these concepts we can use this knowledge to replace memorization of misleading, incomplete, and outdated mental models. Remember these are highly level summaries of complex processes simplified for basic comprehension.
 
@@ -47,7 +44,7 @@ In the first stage of compilation, lexical analysis and tokenizing refers to the
 Once the source code has been lexed/tokenized, the engine parses the code to create an abstract tree representation (AST). The AST is a data structure that tells our compiler
 
 
-Code Generation
+### Code Generation
 **** describe code generation phase
 turns AST into executable code - intermediate representation of the program
 
@@ -65,7 +62,7 @@ Event loop.
 
 Pizza Party Analysis 
 
-Days of dial up are over, attention span of a goldfish, 
+Days of dial up are over, attention span of a goldfish, goldfish - 8 seconds, human 7 seconds
 
 
 So that was a lot of information.  If you are following let's get back to why? WHy? WHy? Why do we care? Why does this matter to a developer working at a web application level?  
@@ -88,20 +85,28 @@ Where do targets and source fit in?
 
 
 
+## ES Modules and the Module Pattern
 
-ES Modules and the Module Pattern
+In early days of web programming, when the internet still consisted of primarily static web pages, js code was limited to single lines embedded in html to assemble web components.(-XXX confirm this) As it has slowly taken on a new role and expanded functionality to both front and back end development, and non-browser applications, javascript programs have increased in size and complexity, and with it the demand for a consistent load pattern for the use of multiple js files and resources within the same program. As our js files expand in size breaking code down into modules allow us to organize our code into smaller modular pieces, making programs easier to read, scale, debug, reuse components, implement a separation of concerns, and honor the privilege of least exposure, by encapsulating variables and methods into public and private interfaces.
 
-Modules are pieces of data and functions goruped together for , this allows to organize our code by breaking it down into more visibe pieces
+### The Classic Module pattern ********* TO DO
+ what is the Common JS format used for, origination, what is the AMD and UMD format used for, origination
 
-They are many differnt ways to group fucntions and data such as namspacing,......., but in order in order for module to fit the characteristics of the classic module pattern Kyle reminds us our must have these three characteristics:
+ why was ES created? TO DO
 
-1. an outer scope from function that runs at least once,
+
+The classic module pattern - use and origination - TO DO
+modules - grouping, state, access control to private data
+
+In order a for module to fit the characteristics of the classic module pattern Kyle  Simpson (You Don't Know JS) reminds us that it display the following characteristics:
+
+1. an outer scope from that runs at least once,
 2. an inner scope that has at least one piece of hidden information
-3. must return a reference to at least one  function that has closure over a hidden module state 
+3. must return a reference to at least one function that has closure over a hidden module state 
 
-(Simpson, Kyle, 2018, p.85)
 
-My syntax example of the module pattern:
+Below is a syntax example I have create of the classic module pattern in from my experimental app for scopes, modules and closures, it includes the use of a function expression storing an IIFE that returns a public interface through its inner function by uses closure to make the return object keys storing stateful data. 
+
 ```
 // ./modules/cache.js
 
@@ -126,52 +131,97 @@ export { CACHE };
 // main.js
 import { CACHE } from "./modules/cache.js";
 ```
-ES Modules
-```
 
-// Named exports:
+### ES Modules
 
-export { createNewList, buildSavedList, returnSavedList, manageGroceryList }; // this goes at the end of your module file
+Prior to ES6 Javascript did not have Built-in modules.
+While other popular formats had evolved and developed such as the Common JS Module for Node Developers, and the AMD and UMD for and IIFE's.---XXxxxxxxx finish this sentence
 
+ES Modules became the standardized format that has found gradual support across the browser landscape. As of 2020 the only browser still lagging in ES module support are: Opera, Internet Explorer, and a few less commonly known and used browsers.
+
+ESMs are fairly simple and include 3 primary components, an export statement in the file containing module to be exported, an import statement in the top level js file that we are importing to, and a module script statement to be include in the html file. ES Modules do not require Immediately Invoked Function, or any fancy or mystical syntax. Modules are singletons no matter how many times they are imported/exported only one instance is created at the top scope level, because ES modules are automatically created in 'strict-mode' and declarations are scoped to modules and not visible globally. Because modules are operating in strict mode and not available globally, this may limit accessibility to module features in the console and limit debugging capabilities for these objects.
+
+There are several formats for including these three steps in our code, each with minor variations in syntax and functionality.  Named exports are the most straightforward use of ES modules. This es module syntax is useful for exporting/importing multiple objects from one file and to the top level js file of a program using the example shorthand syntax below. Don't forget we need to include the following three steps in any module variation: load the module file with a script tag in our html file, export the module using one of the es module variations, import the module into our top level file.
+``` 
+// Named exports: 
+
+// modules/localStorage.js'
+export { createNewList, buildSavedList, returnSavedList, manageGroceryList }; 
+
+// js/main.js
 import { createNewList, buildSavedList, returnSavedList, manageGroceryList } from './modules/localStorage.js';
 
+// index.html
 <script type="module" src="localStorage.js"></script>
+```
 
+### Default Exports
+Another variation of ES Modules is to use default exports. Default export we created to cooperate with UMD and Common JS modules. This syntax will only export ONE object per file.
+
+
+```
 // Default Exports:
 
+// js/modules/localStorage.js'
 export default newList;
 
+// js/main.js
 import newList from './modules/localStorage.js';
+```
 
-// Renaming imports and exports
-// method 1:
+### Renaming Exports
+Sometimes to avoid naming collisions we may have to rename our modules upon export:
 
+
+```
+// Renaming Module Exports
+
+// js/modules/localStorage.js'
 export {
   createNewList as newList,
   buildSavedList as savedList
 };
 
+// js/main.js
 import { newList, savedList } from './modules/localStorage.js';
+```
 
-// method 2:
+### Renaming Imports
+ES6 has also provided us an option to alternatively rename modules upon import if we prefer:
 
+
+```
+// Renaming Module Imports
+
+// js/modules/localStorage.js'
 export { createNewList, buildSavedList };
 
+// js/main.js
 import {
   createNewList as newList,
   buildSavedList as savedList
 } from './modules/localStorage.js';
+```
 
-// Creating Module objects:
+### Module Objects
+The final module variation will will explore is the creating module objects. Using module object we include or named exports in our export file, and import everything, and reference our exported objects as properties of the imported module
+
+
+```
+// Creating Module Objects
+
+// js/modules/localStorage.js
 export { createNewList, buildSavedList, returnSavedList, manageGroceryList };
+
+// js/main.js
 import * as Storage from './modules/localStorage.js';
 Storage.manageGroceryList('addItem', 'banana', 3);
 ```
+
+
 ## Deeper Exploration
 
-Whew. That was a lot to cover. If you are still here and want to explore these topic further I have two personal favorites I would like to share here, one specifically for in-depth exploration and another for the full breadth of web development and javascript topics. The first resource as I have already mentioned above is the "You Don't Know JS" series by Kyle Simpson, now into it's second edition. These books can be purchased in hardcover on Amazon.com, or digested for free electronically directly from the github repo: https://github.com/getify/You-Dont-Know-JS.  While the majority of the material covered in this blog post was based on "Scopes and Closure", other titles include: "Async and Performance", "Es6 & Beyond", "This and Object Prototypes", "Types and Grammar", and more. Alternatively if video instruction is more your learning style Kyle has some notable intermediate and advanced JS classes at https://frontendmasters.com.
-
-The second resource is a github repo titled '33 Things Every Developer Should Know' . It is a throughout list of articles and video resources for exploring everything from to 
+Whew. That was a lot to cover. If you are still here and want to explore these topic further I have two personal favorites I would like to share here, one specifically for in-depth exploration and another for the full breadth of web development and javascript topics. The first resource as I have already mentioned above is the "You Don't Know JS" series by Kyle Simpson, now into it's second edition. These books can be purchased in hardcover on Amazon.com, or digested for free electronically directly from the github repo: https://github.com/getify/You-Dont-Know-JS.  While the majority of the material covered in this blog post was based on "Scopes and Closure", other titles include: "Async and Performance", "Es6 & Beyond", "This and Object Prototypes", "Types and Grammar", and more. Alternatively if video instruction is more your learning style Kyle has some notable intermediate and advanced JS classes at https://frontendmasters.com.  The second resource is a github repo titled '33 Things Every Developer Should Know'. XXX add link here XXX It is a thorough list of articles and video resources for exploring everything from to 
 
 Good luck on your journey. I hope I was able to clarify some of these topics for you.  If you found this blog post helpful please like it, or share it with other developers you think could benefit, and follow me on Dev.to or check out my online portfolio at http://www.harleighabel.com
 
