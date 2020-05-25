@@ -91,18 +91,82 @@ Where do targets and source fit in?
 
 ES Modules and the Module Pattern
 
+Modules are pieces of data and functions goruped together for , this allows to organize our code by breaking it down into more visibe pieces
 
+They are many differnt ways to group fucntions and data such as namspacing,......., but in order in order for module to fit the characteristics of the classic module pattern Kyle reminds us our must have these three characteristics:
 
+1. an outer scope from function that runs at least once,
+2. an inner scope that has at least one piece of hidden information
+3. must return a reference to at least one  function that has closure over a hidden module state 
 
+(Simpson, Kyle, 2018, p.85)
 
+My syntax example of the module pattern:
+```
+// ./modules/cache.js
 
+const CACHE = (function setCACHE(data) {
+  var cache = {};
+  function cacheData(data, cacheName) {
+    if (data) { cache[cacheName] = data };
+    return cache[cacheName];
+  };
 
+  return {
+    totalPrice: function (data) { return cacheData(data, 'totalPrice') },
+    taxRate: function (data) { return cacheData(data, 'taxRate') },
+    element: {
+      price: document.getElementById('cost-num')
+    }
+  }
+})();
 
+export { CACHE };
 
+// main.js
+import { CACHE } from "./modules/cache.js";
+```
+ES Modules
+```
 
+// Named exports:
 
+export { createNewList, buildSavedList, returnSavedList, manageGroceryList }; // this goes at the end of your module file
 
+import { createNewList, buildSavedList, returnSavedList, manageGroceryList } from './modules/localStorage.js';
 
+<script type="module" src="localStorage.js"></script>
+
+// Default Exports:
+
+export default newList;
+
+import newList from './modules/localStorage.js';
+
+// Renaming imports and exports
+// method 1:
+
+export {
+  createNewList as newList,
+  buildSavedList as savedList
+};
+
+import { newList, savedList } from './modules/localStorage.js';
+
+// method 2:
+
+export { createNewList, buildSavedList };
+
+import {
+  createNewList as newList,
+  buildSavedList as savedList
+} from './modules/localStorage.js';
+
+// Creating Module objects:
+export { createNewList, buildSavedList, returnSavedList, manageGroceryList };
+import * as Storage from './modules/localStorage.js';
+Storage.manageGroceryList('addItem', 'banana', 3);
+```
 ## Deeper Exploration
 
 Whew. That was a lot to cover. If you are still here and want to explore these topic further I have two personal favorites I would like to share here, one specifically for in-depth exploration and another for the full breadth of web development and javascript topics. The first resource as I have already mentioned above is the "You Don't Know JS" series by Kyle Simpson, now into it's second edition. These books can be purchased in hardcover on Amazon.com, or digested for free electronically directly from the github repo: https://github.com/getify/You-Dont-Know-JS.  While the majority of the material covered in this blog post was based on "Scopes and Closure", other titles include: "Async and Performance", "Es6 & Beyond", "This and Object Prototypes", "Types and Grammar", and more. Alternatively if video instruction is more your learning style Kyle has some notable intermediate and advanced JS classes at https://frontendmasters.com.
