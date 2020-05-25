@@ -1,8 +1,11 @@
 ---
-title:JS Under the Hood - The Fuzzy Parts | Understanding JIT Comp, Scopes, Closures, Hoisting, Shadowing, THIS, & the Module Pattern
+title: JS Under the Hood - The Fuzzy Parts | Understanding JIT Comp, Scopes, Closures, Hoisting, Shadowing, THIS, & the Module Pattern
+
 published: false
-description: 
-tags: 
+
+description: Understanding Just-In-Time Compilation,Exploring Scopes, Closures, Hoisting, and Shadowing, Comparing Variable and Function Behavior and Types, Implicit vs Explicit - Rules of Precedence for determining THIS, The Principle of Least Exposure (POLE), Review of the Classic Module Pattern and the ES Module Format
+
+tags: #javascript #web-development #closure #hoisting #modules #jit-compilation #shadowing
 ---
 
 Some of the topics explored in this post:
@@ -75,14 +78,55 @@ scope is mostly determined during compilation (corner cases modules where the va
 
 Where do targets and source fit in?
 
+## This, This, This or This
+
+The keyword 'THIS' has been tripping up an mystifying new developers since it was popularized in ECMA5 with the introduction of blah, blah, blah.  The common misconception is that THIS is a reference to the function itself, OR to the lexical scope of the function being called on the THIS object, but THIS is actually a runtime binding determined by the call site that creates an execution context for the life of that THIS instance. In other words THIS is kind of like a post-it note we stuck to a js object to let our program know what THIS is referring to. In order to determine what THIS is referring to we need to examine the point in our code where our THIS was attached to our object, aka the call site. There are multiple ways to configure our THIS binding, and since more that one determining variation can appear at the same call site, we need to recognize and understand the hierarchy to which rule of THIS binding applies. In order from highest precedence to lowest precedence the four rules for determining what our THIS binding is pointing to are: 1. The NEW constructor keyword, 2. explicit binding 3. implicit binding, and 4.default binding. Let's explore how each of these execution contexts are determined and the syntax used to implement them.
+
+### THIS by Default
+
+Starting from the bottom up, the default rule is in effect when none of the other cases apply to our call site. If our THIS instance is not using implicit/explicit binding or the NEW constructor keyword then the default THIS behavior will be determined by whether or not the CONTENTS of the function are running in strict mode. If strict mode has not been applied to our function then our THIS binding will refer to the global object. If our function is running in strict mode then the global object becomes unavailable and the value of THIS is set to 'undefined';
+
+ ```
+  code sample - use strict
+  code sample - non use strict
+
+ ```
+
+### Implicitly THIS
+what is auto boxing
+describe bind call and apply
+code samples
 
 
 
 
+implicit code sample
+
+### Explicitly THIS - Bind, Call and Apply
+THIS can be explicitly set to the object of our choice by using one of three popular methods bind(), call(), or apply(). Each of these important tools work similarly with slight variations in parameter expectations and return values. The first parameter passe into each of these functions will be the object we intend to explicitly set as our execution context.  If you decide to pass in a primitive value (such a string or integer) instead the value will be autoboxed to create the object parameter is the function expects. Autoboxing is... 
+
+call()
+
+apply()
+
+bind()
 
 
 
+explicit code sample 
 
+### A brand new THIS
+
+The easiest rule to identify is the use of the New constructor. The NEW keyword creates a new javascript object that THIS binds to for the duration of the constructor call.
+
+new code sample
+
+To Review the order of precedence fro highest to lowest in determining which object our THIS binding is set to is:
+
+1. The NEW constructor keyword
+2. Explicit binding - using bind(), call(), or apply() to set our THIS context
+3. Implicit binding - look to the left!
+4. Default binding - global object or undefined (strict vs non-strict mode)
 
 
 ## ES Modules and the Module Pattern
