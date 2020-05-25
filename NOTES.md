@@ -59,7 +59,7 @@ single threaded - one call stack, one memory heap, executes code in order , must
 
 non blocking functionality is feature provided by the environment - ie node js or web browser
  - event loop model in js is non blocking, immediately invoked scripts are loaded an executed immediately, while callback events are placed in the event handeler queue in the order that the events occur, each callback is executed to completion before moving on the the next callback in the queue - not part of js language, this an environment feature that turns single threaded js into a non blcoking asynchrous exectution
-
+********************/
 Lexical Scope and the Scope Chain 
 lexical scoping means that scope is determined during compilation during the lexing phase by the location of blocks function and  declarations in relation to each other. scope is not generally modifiable during run time
 
@@ -102,6 +102,8 @@ implied scopes - parameter scope - non simple parameters create their own scope 
 how does this effect our programming
 
 <!-- image of the scope buckets? of just comment colors-->
+
+/***************************/
 Principle of Least Exposure.
 what?
 principle of least privilege - every process module or fucntion only access the data and variables, information it legimately needs to perform the work it has been created for, aka principle of minimal priveledge, principle of least authority, component, system level
@@ -116,6 +118,7 @@ deployment - fewer priviledges easier to deploy
 How?
 declare variables in small, private, deeply nested scopes, use blocks and functions to nest our variables in, scope with blocks and iife’s
 
+/***************************/
 The Case For VAR
 minimal scope exposure
 variable declarator with a bad rap
@@ -181,7 +184,7 @@ WHY? How do our vairable types behave differently?
 Temporal Dead Zone - is the time period between a variable being top of scopw and being auto-initialized, to avoid temporal dead zone errors always use let and const at the top of the scope they are declared in, elminating the observable time between identifier registration and variable initialization and value assignment
 
 dont recommend using a variable before it’s declaration, is confusing and difficult to read
-
+/***************************/
 Variable Shadowing - syntax example
 Shadowing is the legal process of eclipsing the value of variable declared in an enclosing scope by declaring a variable of the same name in an inner scope
 legal process of maintaining two variables of the same name with different values in different scopes
@@ -202,7 +205,7 @@ to make changes to legacy code, to hide conceal data from a public interface
 
               <!-- code sample of hoisting with results for const, var, let-->
 
-                                                    
+                                      /*********************/              
 Function Scopes And Behaviors
 while functions are created to ……. different types of functions have subtle differences in behavior
 
@@ -235,6 +238,7 @@ like var fucntion definitions also attach to the nearest function scope. (or glo
 
 use for function hoisting - executable code first, function declarations last
 
+/***********************/
 THIS, THIS, THIS or THIS
  <!-- this, this, or this table -->
 you can not use this to access or reference lexical scope
@@ -271,9 +275,10 @@ implicit -
 default 
 **** 
 
+/******************************/
 Closures
 ‘JavaScript, function closures capture their non-local variables by reference.’ wikipedia 
-‘closure is a function instance and its scope environment preserved in-place while any references to it are passed around and invoked from other scopes.’ Youdont know js
+‘closure is a function instance and its scope environment preserved in-place while any references to it are passed around and invoked from other scopes.’ You dont know js
 
 ‘To use a closure, define a function inside another function and expose it. To expose a function, return it or pass it to another function’
 
@@ -283,31 +288,77 @@ to observe a closure it must be invoked from another part of the program
 
 ‘Closure is observed when a function uses variable(s) from outer scope(s) even while running in a scope where those variable(s) wouldn't be accessible.
 The key parts of this definition are:
-* Must be a function involved 
-* Must reference at least one variable from an outer scope 
-* Must be invoked in a different branch of the scope chain from the variable(s)’
+
+'* Must be a function involved
+* Must reference at least one variable from an outer scope
+* Must be invoked in a different branch of the scope chain from the variable(s)' -Kyle
 
 you can emulate private methods with closures, data hiding and encapulation
 only a function can have closure
-closure refers to variables by reference not by value (pointer), you are accessing the acutal variable, not a copy of it
+closure refers to variables by reference not by value (pointer), you are accessing the actual variable, not a copy of it
 uses: data privacy, event handlers, callback functions, currying;
 benefits: makes code cleaner, easier to read, narrowing function scope, elminating the need to pass in preserved data, more effcient - stores values rather than having to recompute them over and over again
 three things to make a closure
 
+/***************************/
+wikipedia - Modules allow gathering properties and methods in a namespace and making some of them private
+a module is a collection of similar data and functions
+
+reasons for the modules?
+easier to read, easier to manage, modularity, encapsulation, separation of concerns, pole, to make variables and methods private
+create cohesion among multiple files
+a consistent way to load modules
+js programs have become larger and more complex
+
+
+ES modules why did we create another form of modules if we already had UMD AMD and Common JS
+
 ES Modules and the Module Pattern
-wikipedia - Modules allow gathering properties and methods in a namespace and making some of them private.
+
+what are other types of data collections don't qualify as the module pattern?
+reasons for modules?
 
 Classic Module Pattern:
-outer scope from function that runs at least once,
+namespaces - stateless grouping - not saving state
+stateful grouping - not making functions or data private
+modules - grouping, state, access control to private data
+
+'outer scope from function that runs at least once,
 inner scope that has at least one piece of hidden information
-must return a reference to at least one  fucntion that has closure over a hidden module state 
+must return a reference to at least one function that has closure over a hidden module state' 
+
+
+- 'defining modules and functions inside your outer module definition make every private by default' - Kyle
+- 'only properties added to the public object returned from the function will be exported for public use' - Kyle
 
 ES Modules
 
-this is the most recent solution for module syntax but other commonly used variaations are AMD, UMD and Common JS, before ecma 2016 modules didnt exisit in javascript and immediately invoked functions expressions were used as a substititue, the script you import your files into acts as the top level module, you can only use import export inside a modules. You can only access modules features  in the script they are imported into they are not accessible in the js console which may limit debugging capbilities, modules use strict mode automatically
+first built in modules
+one module per file, one file per module
+are singletons - one instance
+imported and exported at top level
+everything you want to use in the module has to be exported
+no need to use iife or any fancy techniques or syntax other that the keyword export
+declarations are scoped to that module not globally visible
+export function are hoisted
+this is the most recent solution for module syntax
+other commonly used variations are AMD, UMD and Common JS, 
+before ecma 2016 built-in modules didnt exist in javascript and immediately invoked functions expressions were used as a substitute, 
 
+the script you import your files into acts as the top level module, you can only use import export inside a modules. 
 
+You can only access modules features in the script they are imported into they are not accessible in the js console which may limit debugging capabilities, modules use strict mode automatically
 
+named exports - several per module, export multiple things
+
+default exports - one per module
+designed to inter-operate with UMD and Common JS
+
+module namespace object - imports everything as opposed to default which exports one thing, or named which exports many
+
+explain the code samples
+
+/***************************/
 Resources and acknowledgements
 link and introduction to you dont know JS, 
 deep dive into scopes, closures, modules, shadowing 
@@ -326,10 +377,23 @@ https://frontendmasters.com/teachers/kyle-simpson/
 wikipedia
 youtube
 stack overflow
-if it’s wrong I blame stack overflwo contributors. Hahhaah, jk 
 
+References
 
-what about function hoisting
-
+you dont know js
+33 things 
+youtube videos - 
+list at least three helpful articles 
+event loop 
+Stack Overflow
+Flatiron Instructor - 
+wikipedia
 
 overseperating concerns - like trying to read the english language in strokes instead of characters
+
+how do I write references for a blog post? video? article? repo? book?person? stackoverFlow post?
+
+
+
+
+
