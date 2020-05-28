@@ -52,7 +52,7 @@ Once the source code has been lexed/tokenized, the engine parses the code to cre
 turns AST into executable code - intermediate representation of the program
 
 
-What significance does this have to us as devleopers?
+What significance does this have to us as developers?
 Aside from a few corner cases scope is determined 
 
 
@@ -80,11 +80,11 @@ Where do targets and source fit in?
 
 ## This, This, This or This
 
-The keyword 'THIS' has been tripping up an mystifying new developers since it was popularized in ECMA5 with the introduction of blah, blah, blah.  The common misconception is that THIS is a reference to the function itself, OR to the lexical scope of the function being called on the THIS object, but THIS is actually a runtime binding determined by the call site that creates an execution context for the life of that THIS instance. In other words THIS is kind of like a post-it note we stuck to a js object to let our program know what THIS is referring to. In order to determine what THIS is referring to we need to examine the point in our code where our THIS was attached to our object, aka the call site. There are multiple ways to configure our THIS binding, and since more that one determining variation can appear at the same call site, we need to recognize and understand the hierarchy to which rule of THIS binding applies. In order from highest precedence to lowest precedence the four rules for determining what our THIS binding is pointing to are: 1. The NEW constructor keyword, 2. explicit binding 3. implicit binding, and 4.default binding. Let's explore how each of these execution contexts are determined and the syntax used to implement them.
+The use of the keyword this is a concept that often trips up and mystifies new developers. The common misconception is that THIS is a reference to the function itself, OR to the lexical scope of the function being called on the THIS object, but THIS is actually a runtime binding determined by the call site that creates an execution context for the life of that THIS instance. In other words THIS is kind of like a post-it note we stick to a js object to let our program know what THIS is referring to. In order to determine what THIS is referring to, we need to examine the point in our code where our THIS was attached to our object, aka the call site. There are multiple ways to configure our THIS binding, and since more that one determining variation can appear at the same call site, we need to recognize and understand the hierarchy that applies to the THIS binding rules. In order from highest precedence to lowest precedence the four rules for determining what our THIS binding context is are: 1. The NEW constructor keyword, 2. explicit binding 3. implicit binding, and 4.default binding. Let's explore how each of these execution contexts are determined and the syntax used to implement them.
 
 ### THIS by Default
 
-Starting from the bottom up, the default rule is in effect when none of the other cases apply to our call site. If our THIS instance is not using implicit/explicit binding or the NEW constructor keyword then the default THIS behavior will be determined by whether or not the CONTENTS of the function are running in strict mode. If strict mode has not been applied to our function then our THIS binding will refer to the global object. If our function is running in strict mode then the global object becomes unavailable and the value of THIS is set to 'undefined';
+Starting from the bottom up, the default rule is in effect when none of the other cases apply to our call site. If our THIS instance is not using implicit or explicit binding, or the NEW constructor keyword, then the default THIS behavior will be determined by whether or not the CONTENTS of the function are running in strict mode. If strict mode has not been applied to our function then our THIS binding will refer to the global object. If our function IS running in strict mode then the global object becomes unavailable and the value of THIS is set to 'undefined';
 
  ```
   code sample - use strict
@@ -93,40 +93,39 @@ Starting from the bottom up, the default rule is in effect when none of the othe
  ```
 
 ### Implicitly THIS
-what is auto boxing
-describe bind call and apply
-code samples
+Implicit execution contexts are determined the same way the dot operator function call operated. When we call a function using the dot operator we look to the left of the dot to determine what object we are invoking the function on. In the case of implicit binding to the THIS keyword, we determine ownership of the execution context by investigating the call-site in the same way, in more complex cases where multiple properties are chained together only the last level, the final property is the determinant.
 
-
-
+Word of caution with the use of implicit bindings. This binding type easily falls back to the default object and unintentionally resets when it loses it implicit binding. We can prevent this by creating hard bindings with explicit context with the bind() function.
 
 implicit code sample
 
 ### Explicitly THIS - Bind, Call and Apply
-THIS can be explicitly set to the object of our choice by using one of three popular methods bind(), call(), or apply(). Each of these important tools work similarly with slight variations in parameter expectations and return values. The first parameter passe into each of these functions will be the object we intend to explicitly set as our execution context.  If you decide to pass in a primitive value (such a string or integer) instead the value will be autoboxed to create the object parameter is the function expects. Autoboxing is... 
+These functions are useful when we want to create methods that can be used on different objects, they give us the control to specify what context we are binding the original method to, the initial arguments passed in to upon invocation, and the option to create a brand new method bound to our object through hard bindings without mutating the original object or function.
 
-call()
+THIS can be explicitly set to the object of our choice by using one of three popular methods bind(), call(), or apply(). Each of these important tools work similarly with slight variations in parameter expectations and return values. The first parameter passe into each of these functions will be the object we intend to explicitly set as our execution context.  If you decide to pass in a primitive value (such a string or integer) instead the value will be auto-boxed to create the object parameter is the function expects. Autoboxing is when we pass a primitive data type like an integer or a string into a method that is expecting and object and it automatically 'wraps; our argument in an object for us.
 
-apply()
+Autoboxing syntax example
 
-bind()
+The call() method takes two or more parameters as an argument list, the first parameter is the THIS context we are explicitly binding to the call method, and the remaining parameters are the arguments we would like to pass into the call() method which immediately invokes the function being called with these arguments.
 
+The apply() method is virtually identical to the call() and is also used to explicitly bind our execution context to our object and pass arguments to a function being executing on the specified object, the ONLY difference between call() and apply(), is that instead of accepting multiple parameters for additional arguments, the apply() method takes this additional parameters as a single array; The return values for call and apply is the result of the method called on on our bound object with the specified parameters.
 
+The bind() method is a another close, relative of call() and apply(). It is also used to explicitly bind our THIS context and the first parameter is again our intended object for execution context, and the following parameters are again a list of arguments we are passing to the function being invoked, but instead of being invoked immediately as with call() and apply(), a new function is created and returned with the provided parameters hard coded into the newly created function (aka as 'hard binding'), the argument list while passed into the new function before any new arguments passed in at execution time.
 
 explicit code sample 
 
-### A brand new THIS
+### A brand NEW THIS
 
-The easiest rule to identify is the use of the New constructor. The NEW keyword creates a new javascript object that THIS binds to for the duration of the constructor call.
+The easiest rule to identify is the use of the NEW constructor. The NEW keyword creates a new javascript object that THIS binds to for the duration of the constructor call. These will return our newly created objects automatically unless another return value has been specified.
 
 new code sample
 
-To Review the order of precedence fro highest to lowest in determining which object our THIS binding is set to is:
+To review the order of rules determining precedence for our THIS binding from highest to lowest:
 
 1. The NEW constructor keyword
-2. Explicit binding - using bind(), call(), or apply() to set our THIS context
-3. Implicit binding - look to the left!
-4. Default binding - global object or undefined (strict vs non-strict mode)
+2. EXPLICIT binding - using bind(), call(), or apply() to set our THIS context
+3. IMPLICIT binding - look to the left!
+4. DEFAULT binding - global object or undefined (strict vs non-strict mode)
 
 
 ## ES Modules and the Module Pattern
@@ -134,13 +133,8 @@ To Review the order of precedence fro highest to lowest in determining which obj
 In early days of web programming, when the internet still consisted of primarily static web pages, js code was limited to single lines embedded in html to assemble web components.(-XXX confirm this) As it has slowly taken on a new role and expanded functionality to both front and back end development, and non-browser applications, javascript programs have increased in size and complexity, and with it the demand for a consistent load pattern for the use of multiple js files and resources within the same program. As our js files expand in size breaking code down into modules allow us to organize our code into smaller modular pieces, making programs easier to read, scale, debug, reuse components, implement a separation of concerns, and honor the privilege of least exposure, by encapsulating variables and methods into public and private interfaces.
 
 ### The Classic Module pattern ********* TO DO
- what is the Common JS format used for, origination, what is the AMD and UMD format used for, origination
 
- why was ES created? TO DO
-
-
-The classic module pattern - use and origination - TO DO
-modules - grouping, state, access control to private data
+Prior to ES6 Javascript did not have Built-in modules, and solutions such as the use of an IIFE, UMDs(Universal Module Definition), AMDs(Asynchronous Module Definition), the Common JS pattern, and module bundlers evolved out of necessity. Before the creation of native JS modules we had to rely on enclosing functions and closures using the classic module pattern to group similar functions, retain state with within them, and to control access to private user interfaces.
 
 In order a for module to fit the characteristics of the classic module pattern Kyle  Simpson (You Don't Know JS) reminds us that it display the following characteristics:
 
@@ -152,8 +146,6 @@ In order a for module to fit the characteristics of the classic module pattern K
 Below is a syntax example I have create of the classic module pattern in from my experimental app for scopes, modules and closures, it includes the use of a function expression storing an IIFE that returns a public interface through its inner function by uses closure to make the return object keys storing stateful data. 
 
 ```
-// ./modules/cache.js
-
 const CACHE = (function setCACHE(data) {
   var cache = {};
   function cacheData(data, cacheName) {
@@ -170,22 +162,14 @@ const CACHE = (function setCACHE(data) {
   }
 })();
 
-export { CACHE };
-
-// main.js
-import { CACHE } from "./modules/cache.js";
 ```
 
 ### ES Modules
+Since ES built-in modules were introduced in ES6 they have slowly found support across the browser landscape as they become the standardized native format for javascript development. As of 2020 the only browsers still lagging in adopting ES modules are: Opera, Internet Explorer, and a few less commonly known and used outliers.
 
-Prior to ES6 Javascript did not have Built-in modules.
-While other popular formats had evolved and developed such as the Common JS Module for Node Developers, and the AMD and UMD for and IIFE's.---XXxxxxxxx finish this sentence
+ESMs are fairly simple and include three lines of code to implement: an export statement in the file containing module to be exported, an import statement in the top level js file that we are importing to, and a module script statement to be include in the html file. ES Modules do not require Immediately Invoked Function, or any fancy or mystical syntax. Modules are singletons no matter how many times they are imported/exported only one instance is created at the top scope level, because ES modules are automatically created in 'strict-mode' and declarations are scoped to modules and not visible globally. Because modules are operating in strict mode and not available globally, this may limit accessibility to module features in the console and limit debugging capabilities for these objects.
 
-ES Modules became the standardized format that has found gradual support across the browser landscape. As of 2020 the only browser still lagging in ES module support are: Opera, Internet Explorer, and a few less commonly known and used browsers.
-
-ESMs are fairly simple and include 3 primary components, an export statement in the file containing module to be exported, an import statement in the top level js file that we are importing to, and a module script statement to be include in the html file. ES Modules do not require Immediately Invoked Function, or any fancy or mystical syntax. Modules are singletons no matter how many times they are imported/exported only one instance is created at the top scope level, because ES modules are automatically created in 'strict-mode' and declarations are scoped to modules and not visible globally. Because modules are operating in strict mode and not available globally, this may limit accessibility to module features in the console and limit debugging capabilities for these objects.
-
-There are several formats for including these three steps in our code, each with minor variations in syntax and functionality.  Named exports are the most straightforward use of ES modules. This es module syntax is useful for exporting/importing multiple objects from one file and to the top level js file of a program using the example shorthand syntax below. Don't forget we need to include the following three steps in any module variation: load the module file with a script tag in our html file, export the module using one of the es module variations, import the module into our top level file.
+There are several formats for including these three steps in our code, each with minor variations in syntax and functionality. Named exports are the most straightforward use of ES modules. This es module syntax is useful for exporting/importing multiple objects from one file and to the top level js file of a program using the example shorthand syntax below. Don't forget we need to include the following three steps in any module variation: load the module file with a script tag in our html file, export the module using one of the es module variations, import the module into our top level file.
 ``` 
 // Named exports: 
 
