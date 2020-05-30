@@ -78,6 +78,24 @@ scope is mostly determined during compilation (corner cases modules where the va
 
 Where do targets and source fit in?
 
+## Lexical Scope and Scope Chain
+
+
+## Principle of Least Exposure
+
+
+## The Case for Var
+
+## Reviewing Let
+
+## Downgrading Const
+
+## Variable Shadowing
+
+## Hoisting and the Dead Zone
+
+## Function Scopes and Behaviors
+
 ## This, This, This or This
 
 The use of the keyword this is a concept that often trips up and mystifies new developers. The common misconception is that THIS is a reference to the function itself, OR to the lexical scope of the function being called on the THIS object, but THIS is actually a runtime binding determined by the call site that creates an execution context for the life of that THIS instance. In other words THIS is kind of like a post-it note we stick to a js object to let our program know what THIS is referring to. In order to determine what THIS is referring to, we need to examine the point in our code where our THIS was attached to our object, aka the call site. There are multiple ways to configure our THIS binding, and since more that one determining variation can appear at the same call site, we need to recognize and understand the hierarchy that applies to the THIS binding rules. In order from highest precedence to lowest precedence the four rules for determining what our THIS binding context is are: 1. The NEW constructor keyword, 2. explicit binding 3. implicit binding, and 4.default binding. Let's explore how each of these execution contexts are determined and the syntax used to implement them.
@@ -102,7 +120,7 @@ implicit code sample
 ### Explicitly THIS - Bind, Call and Apply
 These functions are useful when we want to create methods that can be used on different objects, they give us the control to specify what context we are binding the original method to, the initial arguments passed in to upon invocation, and the option to create a brand new method bound to our object through hard bindings without mutating the original object or function.
 
-THIS can be explicitly set to the object of our choice by using one of three popular methods bind(), call(), or apply(). Each of these important tools work similarly with slight variations in parameter expectations and return values. The first parameter passe into each of these functions will be the object we intend to explicitly set as our execution context.  If you decide to pass in a primitive value (such a string or integer) instead the value will be auto-boxed to create the object parameter is the function expects. Autoboxing is when we pass a primitive data type like an integer or a string into a method that is expecting and object and it automatically 'wraps; our argument in an object for us.
+THIS can be explicitly set to the object of our choice by using one of three popular methods bind(), call(), or apply(). Each of these important tools work similarly with slight variations in parameter expectations and return values. The first parameter passe into each of these functions will be the object we intend to explicitly set as our execution context.  If you decide to pass in a primitive value (such a string or integer) instead the value will be auto-boxed to create the object parameter is the function expects. Auto-boxing is when we pass a primitive data type like an integer or a string into a method that is expecting and object and it automatically 'wraps; our argument in an object for us.
 
 Autoboxing syntax example
 
@@ -127,12 +145,25 @@ To review the order of rules determining precedence for our THIS binding from hi
 3. IMPLICIT binding - look to the left!
 4. DEFAULT binding - global object or undefined (strict vs non-strict mode)
 
+## Closures 
+Closures are another foggy concept for many new developers, and can be a bit to wrap your head around at first. They seem to evade our traditional concepts of variable scope and lifecycle. Simply put closures are a way to maintain state and access variables from an external scope after the initial function call has completed. They can be used to separate methods and functions into private and public interfaces through encapsulation. Using closures narrows our function scope, creates code that is easier to read, and increases efficiency by allowing us to maintain state of a variable instead of having to recompute it for every instance, or alternatively having to keep track of, preserve and pass in a particular piece of data.
+
+Closures are a feature only available to functions, and are created by nesting one function within another, then by passing the nested function a variable and exposing this preserved data to an external scope in a return statement.
+
+Closures can only truly be defined as closures if they can be observed, which means that the variable maintaining state must be accessed from an external scope in order to create the intended and observable effect. Closures provide direct access to manipulate the variable itself, as they provide us access by reference not by value and as commonly misinterpreted. 
+
+Kyle Simpson's mental model most accurately describes closures as "a function instance and its scope environment preserved in-place while any references or variables to it are passed around and invoked from other scopes.'
+
+Closure syntax example
+
+Quick review: outer function, nested inner function, variable passed from outer function to inner function to maintain state, inner function exposes variable through return statement, scope external to outer function accesses inner data and variables.
+Now that we've explore closures understand lets move on to modules.
 
 ## ES Modules and the Module Pattern
 
 In early days of web programming, when the internet still consisted of primarily static web pages, js code was limited to single lines embedded in html to assemble web components.(-XXX confirm this) As it has slowly taken on a new role and expanded functionality to both front and back end development, and non-browser applications, javascript programs have increased in size and complexity, and with it the demand for a consistent load pattern for the use of multiple js files and resources within the same program. As our js files expand in size breaking code down into modules allow us to organize our code into smaller modular pieces, making programs easier to read, scale, debug, reuse components, implement a separation of concerns, and honor the privilege of least exposure, by encapsulating variables and methods into public and private interfaces.
 
-### The Classic Module pattern ********* TO DO
+### The Classic Module pattern 
 
 Prior to ES6 Javascript did not have Built-in modules, and solutions such as the use of an IIFE, UMDs(Universal Module Definition), AMDs(Asynchronous Module Definition), the Common JS pattern, and module bundlers evolved out of necessity. Before the creation of native JS modules we had to rely on enclosing functions and closures using the classic module pattern to group similar functions, retain state with within them, and to control access to private user interfaces.
 
