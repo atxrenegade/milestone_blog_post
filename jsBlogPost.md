@@ -78,26 +78,46 @@ scope is mostly determined during compilation (corner cases modules where the va
 
 Where do targets and source fit in?
 
-## Lexical Scope and Scope Chain
+## Lexical Scope and Scope Chain*******
 
+Now that have a clear understanding of scope and how and when javascript implements it we can start exploring how we can use it write better constructed programs.
 
 ## Principle of Least Exposure
 
+The Principle of Least Exposure(POLE) is a variation(or extension?)of the POLP principle (The principle of Least Privilege). It argues that function and variable access should be restricted to only to the parts of the program for which it is an absolute necessity to complete the work that that part, was designed to execute. Using encapsulation we can limit exposure creating better code organization, more secure programs, isolation of vulnerabilities, and easier updates. We implement the POLE principle by nesting our variables and functions in the smallest scope available using functions, blocks and IIFE's (Immediately Invoked Function Expressions) resulting in greater program stability, reducing the chance of naming collisions or unintended dependency, or unexpected side effects.  
 
 ## The Case for Var
+As a new js developer I was also steered away from the use of the var variable type, and hence didn't really understand it myself. I knew that it was labelled legacy code, the black sheep in the js family that insisted on creating unpredictable bugs through a behavior called hoisting. Beyond that I didn't really understand it, and was instructed to stick with const Personally found const to be unpredictable and deceiving, claiming to be immutable yet still alterable, so steering clear of the trickery and deceit of both const and var, I defaulted to seeming safe and neutral let variable type for nearly every variable I declared. Before we get into the behavioral differences between var, let and const let's quickly review them.
+
+Let me re-introduce you to var perhaps you also got off on the wrong foot. Var is a sturdy variable declarator that originated in first xxxx of JS, and up until ES5 or 6? was the only flavor of JS variable came in. Var variables attach to the nearest function scope to create function scoped variables. Var is a visible differentiator from let and const in programs helping us separating function and block scoped variables from each other at a glance.  Redeclaration of var within the same scope has zero effect, making it a useful variable as a semantic reminder when there is visible distance between our original var declaration and the variable assignment, or it's use in our code. Var is also the preferred variable for for global variables, and for declaring a variable inside a loop that also also needs to be accessed externally without creating a separation between declaration and use. 
 
 ## Reviewing Let
+The let keyword acts very similarly to var. Let is also used to declare mutable variables and attaches to the nearest block scope. Let was introduced with Const in ES6 prior to that block scoping in JS did not exist. On to const.
 
 ## Downgrading Const
+Const is reserved for declaring static variables and cannot be reassigned. Due to const's inflexibility it is best used for variable types like fixed strings, or numbers. Because const cannot be reassigned it cannot be declared without assignment, attempting to do so will result in a Syntax Error.
 
 ## Variable Shadowing
 
 ## Hoisting and the Dead Zone
 
+
+
+
+
+
+
+This new perspective on var has definitely opened my eyes to the logic and reasoning behind it's intended use and become my preferred function scoped variable declarator.
+
 ## Function Scopes and Behaviors
 
-## This, This, This or This
 
+
+
+
+
+
+## This, This, This or This
 The use of the keyword this is a concept that often trips up and mystifies new developers. The common misconception is that THIS is a reference to the function itself, OR to the lexical scope of the function being called on the THIS object, but THIS is actually a runtime binding determined by the call site that creates an execution context for the life of that THIS instance. In other words THIS is kind of like a post-it note we stick to a js object to let our program know what THIS is referring to. In order to determine what THIS is referring to, we need to examine the point in our code where our THIS was attached to our object, aka the call site. There are multiple ways to configure our THIS binding, and since more that one determining variation can appear at the same call site, we need to recognize and understand the hierarchy that applies to the THIS binding rules. In order from highest precedence to lowest precedence the four rules for determining what our THIS binding context is are: 1. The NEW constructor keyword, 2. explicit binding 3. implicit binding, and 4.default binding. Let's explore how each of these execution contexts are determined and the syntax used to implement them.
 
 ### THIS by Default
