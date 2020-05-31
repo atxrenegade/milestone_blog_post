@@ -78,28 +78,62 @@ scope is mostly determined during compilation (corner cases modules where the va
 
 Where do targets and source fit in?
 
-## Lexical Scope and Scope Chain*******
+## Lexical Scope and Scope Chain
 
-Now that have a clear understanding of scope and how and when javascript implements it we can start exploring how we can use it write better constructed programs.
+### What is scope?
+Scope is like a container that holds our functions and variables, it has a defined boundary and we can nest one scope "container" within another. The scope "container" is the area of our program that a function or variable is visible within, it is the part of the program that these js objects can be referenced in. A variable or functions scope cannot leak into another scope, it is completely enclosed and each scope is fully nested within it's parent scope. 
+
+### What is lexical scoping?
+Lexical scoping is a reference to scope that is determined during the lexing phase of compilation. As we learned when exploring how our js engine processes our code, during the compilation phase the js engine uses the location of variable and function declarators to determine scope in relation to other js objects and parts of our program.  Scope is not generally modifiable at runtime, and references to our functions and variables are legal as long as they are used within the same scope that a declarator was made or within an enclosing parent scope.
+
+### What is scope chain?
+The scope chain is the relationship scopes have each other. Scopes are nested one within another fully enclosed forming a chain of scopes like similar to the layers of an onion or a set of russian nesting dolls. This scope chain created at compile time is how the interpreter connects an identifier with the declaration that informs the interpreter of what that identifiers scope will be. As we learned in the compilation section, the compiler determines scope at in during the lexing phase while the interpreter handles assignment during execution.
+
+When an interpreter reaches and identifier it searches the scope level it is in for a declaration matching that identifier. If no identifier is found within the current scope it moves up and outward to the parent scope to search for a match.  The scope chain in one directional and ALWAYS moves only in an outward and upward direction from innermost to outermost scope. As the interpreter continues its search for a matching declaration it continues through each scope level until it reaches the global scope.  The interpreter cannot assign a value to an undeclared variable or function and will throw and error, or create a variable depending on the mode the programming is running in. If our function or program is operating within strict mode and the interpreter does not find a match and an accidental global variable is created. If we are running in strict mode a reference error will be thrown. 
+
+<image of RUSSIAN NEsting dolls>
+
+### Levels of scope 
+Prior to ECMAScript 2015 we were limited to two levels of scope within our programs: the Global scope, and the Function scope. Block scoping did not become available until let and const were introduced in ES6.
+
+### Global Scope
+Global scope is the outermost scope in a js program.  Global scope is significant because it is the 'glue' between modules, it is the scope that we use to import external files and libraries into our program, and it is also where js exposes built-ins, the DOM, the console, and environment features like setTimeout(). The globalScope varies in definition and behavior depending on the JS environment, and the actual outermost scope may not always be the global scope object. Functions and variables defined within the global scope are accessible throughout the program. Even though defining global objects allows for easy access to our functions and variables it in not good practice to crowd our namespace with global variables as we will see and understand why narrower scopes are recommended when we review the Principle of Least Exposure.
+
+### Local Scopes - Function, Block, and Implied Scope
+Within the global scope we can nest our local scopes, the most common types of local scope are Function Scopes, and Block Scopes.  
+
+A local scope is any scope nested within the global scope. This could be either type, function scope or a block scope. Variables and function declared within our local scope will only be visible with this local container. Function scopes refer specifically to objects that are only accessible from the function level inwards and to the nested children of the current function scope.
+
+Block scopes were introduced in 2015 with the creation of let and const variable types.  Though syntactically there are many cases that we use curly braces in our JS programs, these code blocks do not qualify as block scopes until a variable to be contained is declared within them. Object literals, function declarations, try...catch statements, and classes are a few examples of blocks that do not qualify as block scopes. It's important to remember never to define functions within blocks, because they be unpredictable and their behavior will vary across JS environments. Block scoping is useful for increasing code readability, narrowing our variable scopes, and reducing the potential for Temporal Dead Zone Errors which we will explore shortly.
+
+Less commonly familiar are implied scopes. Scopes that have been implicitly and created that may cause strange bugs and unexpected side effects if we are not aware of their creation. One implied scope to watch out for is the parameter scope created when when we use non simple parameters as function argument. Since default arguments classify as non-simple arguments we can unintentionally  create a parameter scope nested between a function's parent scope and the function's inner scope which could lead to accidentally variable shadowing.  Another potential implied scope is the nested scope created between a function expression and the name identifier of function expression's definition. It's important to be aware of how these implied scopes may be created to control any side effects they may have in our program.
+
+<code example>
+
+Now that have a clear understanding of when javascript determines scope, how to use different types of scopes and how different variable types behave we can start exploring how we can use these concepts to construct better programs.
 
 ## Principle of Least Exposure
 
-The Principle of Least Exposure(POLE) is a variation(or extension?)of the POLP principle (The principle of Least Privilege). It argues that function and variable access should be restricted to only to the parts of the program for which it is an absolute necessity to complete the work that that part, was designed to execute. Using encapsulation we can limit exposure creating better code organization, more secure programs, isolation of vulnerabilities, and easier updates. We implement the POLE principle by nesting our variables and functions in the smallest scope available using functions, blocks and IIFE's (Immediately Invoked Function Expressions) resulting in greater program stability, reducing the chance of naming collisions or unintended dependency, or unexpected side effects.  
+The Principle of Least Exposure(POLE) is a variation(or extension?)of the POLP principle (The principle of Least Privilege). It argues that function and variable access should be restricted to only to the parts of the program for which it is an absolute necessity to complete the work that that part, was designed to execute. Using encapsulation we can limit exposure creating better code organization, more secure programs, isolation of vulnerabilities, and easier updates. We implement the POLE principle by nesting our variables and functions in the smallest scope available using functions, blocks and IIFE's (Immediately Invoked Function Expressions) resulting in greater program stability, reducing the chance of naming collisions, unintended dependency, or unexpected side effects. 
+
+Since we have had a quick dive into how the JS engine compiles and interprets our program, we know that scope is determined during the lexing phase of the compilation stage. We've reviewed what types of variables can be created, and what levels of scope are available. Now lets look at how our variable types determine what scope the compiler will create for our variables.
 
 ## The Case for Var
-As a new js developer I was also steered away from the use of the var variable type, and hence didn't really understand it myself. I knew that it was labelled legacy code, the black sheep in the js family that insisted on creating unpredictable bugs through a behavior called hoisting. Beyond that I didn't really understand it, and was instructed to stick with const Personally found const to be unpredictable and deceiving, claiming to be immutable yet still alterable, so steering clear of the trickery and deceit of both const and var, I defaulted to seeming safe and neutral let variable type for nearly every variable I declared. Before we get into the behavioral differences between var, let and const let's quickly review them.
+As a new js developer I was also steered away from the use of the var variable type, and really didn't understand it myself. I "knew" that it was labelled legacy code, the black sheep in the js family that insisted on creating unpredictable bugs through a behavior called "hoisting". Beyond that I didn't really understand it, and was instructed to stick with const for all variable instances with the occasional use of let. I personally found const to be unpredictable and deceiving, claiming to be immutable yet still alterable, so steering clear of the trickery and deceit of both const and var, I defaulted to seeming safe solution of the neutral let variable type for nearly every variable I declared. Gaining a better understand of how this variables work has completely changed how I use variable declarators but before we get into the behavioral differences, let's review them.
 
-Let me re-introduce you to var perhaps you also got off on the wrong foot. Var is a sturdy variable declarator that originated in first xxxx of JS, and up until ES5 or 6? was the only flavor of JS variable came in. Var variables attach to the nearest function scope to create function scoped variables. Var is a visible differentiator from let and const in programs helping us separating function and block scoped variables from each other at a glance.  Redeclaration of var within the same scope has zero effect, making it a useful variable as a semantic reminder when there is visible distance between our original var declaration and the variable assignment, or it's use in our code. Var is also the preferred variable for for global variables, and for declaring a variable inside a loop that also also needs to be accessed externally without creating a separation between declaration and use. 
+Let me re-introduce you to var perhaps you also got off on the wrong foot. Var is a sturdy variable declarator that originated in first xxxx of JS, and up until ES5 or 6? was the only flavor of JS variable came in. Var variables attach to the nearest function scope to create function scoped variables. Var is a visible differentiator from let and const in programs helping us separating function and block scoped variables from each other at a glance.  Re-declaration of var within the same scope has zero effect, making it a useful variable as a semantic reminder when there is visible distance between our original var declaration and the variable assignment, or it's use in our code. Var is also the preferred variable for for global variables, and for declaring a variable inside a loop that also also needs to be accessed externally without creating a separation between declaration and use. 
 
 ## Reviewing Let
 The let keyword acts very similarly to var. Let is also used to declare mutable variables and attaches to the nearest block scope. Let was introduced with Const in ES6 prior to that block scoping in JS did not exist. On to const.
 
 ## Downgrading Const
-Const is reserved for declaring static variables and cannot be reassigned. Due to const's inflexibility it is best used for variable types like fixed strings, or numbers. Because const cannot be reassigned it cannot be declared without assignment, attempting to do so will result in a Syntax Error.
-
-## Variable Shadowing
+Const is reserved for declaring static variables and cannot be reassigned. Due to const's inflexibility it is best used for variables like fixed strings, or numbers. Because const cannot be reassigned, it cannot be declared without assignment, attempting to do so will result in a Syntax Error.
 
 ## Hoisting and the Dead Zone
+
+
+
+## Variable Shadowing
 
 
 
