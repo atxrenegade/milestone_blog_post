@@ -7,6 +7,7 @@ description: Understanding Just-In-Time Compilation,Exploring Scopes, Closures, 
 
 tags: #javascript #web-development #closure #hoisting #modules #jit-compilation #shadowing
 ---
+ <img src='www.harleighabel.com/img/blog/javascript.jpg' alt='Coding in Javascript'>
 
 Some of the topics explored in this post:
 • Understanding Just-In-Time Compilation
@@ -31,6 +32,12 @@ But why do we care? Isn't JavaScript an interpreted language? It was... in the b
 ## JS Engine and the Runtime Environment
 
 There are two important components involved at runtime, the JavaScript engine, and the runtime environment that the engine operates within. Each browser uses it's own engine as they compete for speed and efficiency. You've probably heard of the popular ones, V8 for Google Chrome, Karma for Internet Explorer, Nitro for Safari and FirefoxDeveloper Edition - my personal preference) uses Spider Monkey.  While JS can still be executed with an interpreter, it is more commonly processes by these browsers and their fine tuned engines using complex processes for asynchronously compiling, optimizing and executing source code through multiple threads within the runtime environment.
+
+<figure>
+  <img src="www.harleighabel.com/img/blog/js_browsers.png" alt="Web Browser Logos">
+  <figcaption>Web Browser Logos</figcaption>
+</figure>
+                            
 
 So what is the runtime environment? The runtime environment, is the environment that your code is executed in. It is generally the collection of libraries, tools, and support systems available within the runtime space. Some of these tools and services include the server environment, your desktop environment, the browser, the js engine, the core library, etc.. This also where the event loop is implemented. 
 
@@ -63,25 +70,11 @@ I prefer to think of synchronous JS in terms of a Pizza Party. Imagine everyone 
 
 The event loop is a model we use to describe how the environment manages events at runtime. When the JS engine is executing our code the environment event loop separates tasks into two categories, those to be immediately executed and callback events. As our program is executed line-by-line non blocking scripts are sent to the execution stack and executed immediately in consecutive order, and when the js engine reaches a line of code containing a callback event, this event is placed in a separate event handler queue in the order that they these events occur. Once the JS engine has executed everything in the execution stack, it will begin processing the tasks waiting in the event queue. This allows for asynchronous event handling in our programs by allowing non blocking scripts to be executed before processing callback events. Again this is high-level overview for a basic knowledge of these concepts and I recommend a deeper exploration into the javascript event loop for a better understanding.
 
-## Hoisting and the Dead Zone
-
-### What is hoisting?
-There seem to be a fair few concepts in JS that create confusion and uncertainty among programmers and hoisting is certainly one of them. The non programming definition of "hoisting" is simply the raising or elevating of one thing over another.  In the JS context hoisting 
-
-refers the to registration of a variable identifier at the top of the scope it is declared in. If we look back at how and when our js engines determine variable and function scope we will remember that the registration of variables occurs during compilation, and the value assignment occurs during the execution phase. So how does that reflect in our programs? Well, it depends on the variable type and this is where we will the behavioral differences between Var, Let and Const can be observed.
-
-To begin with, ALL variable declarators are hoisted to the top of their scope at runtime, despite what you may have heard. Variables declared with the keyword Var will be registered, and immediately initiatied with a default value of 'undefined' making them immediately available for use, albiet they will not reflect our intended value until the engine reaches the line of code with out variable value assignment.  
-
-If the variable 
-
-
-It means that during execution or identifiers and there scopes have already been determined but their values have not, and wont be accessible until the engine executes the line of code that 
-
-
-FUNCTION TYPES
-
-
-
+<figure>
+  <img src="www.harleighabel.com/img/blog/js_event_loop.gif" alt="The Javascript Event Loop Model">
+  <figcaption>The Javascript Event Loop, Image Credit: Sagore, Raul. Understanding Event Loop, Call Stack, Event & Job Queue in Javascript, 2 Jan. 2019, medium.com/@Rahulx1/understanding-event-loop-call-stack-event-job-queue-in-javascript-63dcd2c71ecd. Accessed 2 June
+  2020.</figcaption>
+</figure>
 
 ## Lexical Scope and Scope Chain
 
@@ -95,7 +88,10 @@ Lexical scoping is a reference to scope that is determined during the lexing pha
 The scope chain is the relationship scopes have each other. Scopes are nested one within another fully enclosed forming a chain of scopes like similar to the layers of an onion or a set of russian nesting dolls. This scope chain created at compile time is how the interpreter connects an identifier with the declaration that informs the interpreter of what that identifiers scope will be. As we learned in the compilation section, the compiler determines scope at in during the lexing phase while the interpreter handles assignment during execution.
 
 When an interpreter reaches and identifier it searches the scope level it is in for a declaration matching that identifier. If no identifier is found within the current scope it moves up and outward to the parent scope to search for a match.  The scope chain in one directional and ALWAYS moves only in an outward and upward direction from innermost to outermost scope. As the interpreter continues its search for a matching declaration it continues through each scope level until it reaches the global scope.  The interpreter cannot assign a value to an undeclared variable or function and will throw and error, or create a variable depending on the mode the programming is running in. If our function or program is operating within strict mode and the interpreter does not find a match and an accidental global variable is created. If we are running in strict mode a reference error will be thrown. 
-<!--image of RUSSIAN NEsting dolls-->
+<figure>
+  <img src="www.harleighabel.com/img/blog/russian-nesting-dolls.jpg" alt='Russian Nesting Dolls'>
+  <figcaption>Russian dolls nested one within another as a visual representation of JavaScript scopes </figcaption>
+</figure>
 
 ### Levels of scope 
 Prior to ECMAScript 2015 we were limited to two levels of scope within our programs: the Global scope, and the Function scope. Block scoping did not become available until let and const were introduced in ES6.
@@ -132,9 +128,41 @@ The let keyword acts very similarly to var. Let is also used to declare mutable 
 Const is reserved for declaring static variables and cannot be reassigned. Due to const's inflexibility it is best used for variables like fixed strings, or numbers. Because const cannot be reassigned, it cannot be declared without assignment, attempting to do so will result in a Syntax Error.
 
 ## Hoisting and the Dead Zone
-*****************************
 
-This new perspective on var and a clear unstanding of hoisting has definitely opened my eyes to the logic and reasoning behind it's intended use. Var has become my preferred function scoped variable declarator.
+### What is hoisting?
+There seem to be a fair few concepts in JS that create confusion and uncertainty among programmers and hoisting is certainly one of them. The non programming definition of "hoisting" is simply the raising or elevating of one thing over another.  In the JS context, "hoisting" refers to the fact that all variable declarations are visible at the top of the scope they are declared in. So how does that reflect in our programs? Well, it depends on the variable type and this is where we can observe behavioral differences between Var, Let and Const.
+
+variable three stages declaration, initialization, and assignment
+
+refers the to registration of a variable identifier at the top of the scope it is declared in. If we look back at how and when our js engines determine variable and function scope we will remember that the registration of variables occurs during compilation, and the value assignment occurs during the execution phase. 
+
+To begin with, ALL variable declarators are hoisted to the top of their scope at runtime, despite what you may have heard. Variables declared with the keyword Var will be registered, and immediately initiatied with a default value of 'undefined' making them immediately available for use, albiet they will not reflect our intended value until the engine reaches the line of code with out variable value assignment.  
+
+If the variable 
+
+This means that we can reference a variable in that scope before we reach the line of code containing the variable declaration.
+It means that during execution or identifiers and there scopes have already been determined but their values have not, and wont be accessible until the engine executes the line of code that 
+
+
+
+### The TDZ and How Hoisting Affects Our Variable Behavior
+
+VAR - 
+
+
+LET - 
+
+CONST - 
+
+
+What is the heck is the Temporal Dead Zone? In simpilest terms the TDZ is the time period between a variable or function declaration and the when it is auto-initialized and available for use. Any variable that has been initialized yet cannot be used and will throw a XXXXX error.  To prevent errors we also declare variables at the top of their scope, and while Var variables are available for use immeditaily it is  
+
+This new perspective on var and a clear understanding of hoisting has definitely opened my eyes to the logic and reasoning behind it's intended use. Var has become my preferred function scoped variable declarator.
+
+ <figure>
+    <img src="www.harleighabel.com/img/blog/deadzonetitle.jpg" alt='Dead Zone Logo as representation of The Temporal Dead Zone'>
+    <figcaption>Stephen King's infamous novel The Dead Zone as a reminder of the Temporal Dead Zone </figcaption>
+</figure>
 
 ## Variable Shadowing
 
@@ -146,12 +174,12 @@ Var cannot legally shadow a Let variable, this would require a scope boundary cr
 I can't think of many reasons why you want to intentionally use variable shadowing. It could be helpful during testing, making changes to legacy code or for concealing data from a public interface but in general, its important to recognize, to prevent unintentional shadowing. It makes far more sense to create a new variable with a different name if you are allocating a different value, in general name sharing is a bad practice unless you have a good reason for it.
 
 <!-- syntax example -->
+<figure>
+  <img src="harleighabel.com/img/blog/eclipse-panaromic.jpg" alt='Panaroma of an elipse representing variable shadowing'>
+  <figcaption>Panaroma of eclipse as a visual representation of Variable Shadowing </figcaption>
+</figure>
 ## Function Scopes and Behaviors
 ********************************
-
-
-
-
 
 
 ## This, This, This or This
@@ -215,6 +243,13 @@ Closure syntax example
 
 Quick review: outer function, nested inner function, variable passed from outer function to inner function to maintain state, inner function exposes variable through return statement, scope external to outer function accesses inner data and variables.
 Now that we've explore closures understand lets move on to modules.
+
+<figure>
+  <img src="www.harleighabel.com/img/blog/kitty_programming.png" alt='cartoon of programming cat'>
+  <figcaption>Image Credit: Artist Unknown. Cartoon Cat Programming at Night,
+  248006.selcdn.ru/main/iblock/910/910ad0a8b7cacf41f92ab846a684edf5/efa84859bb8636e96d68f51add2f96c4.png. Accessed 2 June
+  2020.</figcaption>
+</figure>
 
 ## ES Modules and the Module Pattern
 
@@ -342,11 +377,16 @@ Good luck on your journey. I hope I was able to clarify some of these topics for
 
 Harleigh Abel | atxrenegade - https://github.com/atxrenegade
 
+
 ### References:
 
 All Things Javascript. “Function Declarations VS Function Expressions in JavaScript.” YouTube, 14 Oct. 2016, www.youtube.com/watch?v=gjLn95skIKE.
 
 Code With Mosh. “JavaScript This Keyword.” YouTube, 15 May 2018, www.youtube.com/watch?v=gvicrj31JOM. Accessed 25 May 2020.
+
+ECMA INTERNATIONAL. “ECMAScript Language Specification - ECMA-262 Edition 5.1.” Ecma-International.Org, 2011, ecma-international.org/ecma-262/5.1. Accessed 2 June 2020.
+
+Eygi, Cem. “JavaScript Callback Functions - What Are Callbacks in JS and How to Use Them.” Free Code Camp, 17 Mar. 2020, www.freecodecamp.org/news/javascript-callback-functions-what-are-callbacks-in-js-and-how-to-use-them/. Accessed 2 June 2020.
 
 Griffith, Steve. “JS Function Methods Call( ), Apply( ), and Bind( ).” YouTube, 10 Oct. 2017, www.youtube.com/watch?v=uBdH0iB1VDM.
 
@@ -354,11 +394,21 @@ Griffith, Steve. “JS Function Methods Call( ), Apply( ), and Bind( ).” YouTu
 
 “JavaScript Runtime.” MDN Web Docs, developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino/JavaScript_runtime. Accessed 25 May 2020.
 
+Jain, Siddarth. “Understanding the Event Loop in Javascript ( Js ).” Imaginea, 9 Dec. 2019, www.imaginea.com/the-javascript-event-loop-micro-tasks-and-macro-tasks/. Accessed 2 June 2020.
+
 Johansson, Mattias Petter. “JS Function Methods Call( ), Apply( ), and Bind( ).” YouTube, 10 Oct. 2017, www.youtube.com/watch?v=uBdH0iB1VDM. Accessed 25 May 2020.
+
+“Language Agnostic - What Is a Callback Function?” Stack Overflow, stackoverflow.com/questions/824234/what-is-a-callback-function#7549753.
 
 Maldonado, Leonardo. “Leonardomso/33-Js-Concepts.” GitHub, 24 May 2020, github.com/leonardomso/33-js-concepts. Accessed 25 May 2020.
 
+McGinnis, Tyler. “JavaScript Modules: From IIFEs to CommonJS to ES6 Modules.” YouTube, 15 Jan. 2019, www.youtube.com/watch?time_continue=72&v=qJWALEoGge4&feature=emb_logo. Accessed 2 June 2020.
+
+Orendorff, Jason. “ES6 In Depth: Modules – Mozilla Hacks - the Web Developer Blog.” Mozilla Hacks – the Web Developer Blog, 14 Aug. 2015, hacks.mozilla.org/2015/08/es6-in-depth-modules/. Accessed 2 June 2020.
+
 “Phases of Compiler with Example.” Guru99.Com, 10 Dec. 2019, www.guru99.com/compiler-design-phases-of-compiler.html.
+
+Rauschmayer, Axel. “Exploring ES6.” Exploring JS : JavaScript Books for Programmers, 2015, exploringjs.com/es6/index.html#toc_ch_modules. Accessed 2 June 2020.
 
 Roberts, Phillip. “What the Heck Is the Event Loop Anyway? | Philip Roberts | JSConf EU.” YouTube, 9 Oct. 2014, www.youtube.com/watch?v=8aGhZQkoFbQ. Accessed 25 May 2020.
 
@@ -366,9 +416,22 @@ Simpson, Kyle. “Getify/You-Dont-Know-JS.” GitHub, 25 May 2020, github.com/ge
 
 Techsith. “Javascript Closure Tutorial ( Closures Explained ).” YouTube, 18 Nov. 2015, www.youtube.com/watch?v=71AtaJpJHw0. Accessed 25 May 2020.
 
+Wikipedia Contributors. “Abstract Syntax Tree.” Wikipedia, Wikimedia Foundation, 10 Aug. 2019, en.wikipedia.org/wiki/Abstract_syntax_tree.
+
 Wikipedia Contributors. “JavaScript.” Wikipedia, Wikimedia Foundation, 22 Mar. 2019, en.wikipedia.org/wiki/JavaScript.
 
 Zlatkov, Alexander. “How JavaScript Works: An Overview of the Engine, the Runtime, and the Call Stack.” Medium, 12 Dec. 2018, blog.sessionstack.com/how-does-javascript-actually-work-part-1-b0bacc073cf. Accessed 25 May 2020.
+
+### Images: 
+
+Artist Unknown. Cartoon Cat Programming at Night, 248006.selcdn.ru/main/iblock/910/910ad0a8b7cacf41f92ab846a684edf5/efa84859bb8636e96d68f51add2f96c4.png. Accessed 2 June 2020.
+
+Sagore, Raul. Understanding Event Loop, Call Stack, Event & Job Queue in Javascript, 2 Jan. 2019, medium.com/@Rahulx1/understanding-event-loop-call-stack-event-job-queue-in-javascript-63dcd2c71ecd. Accessed 2 June 2020.
+
+
+<figure>
+    <img src='www.harleighabel.com/img/blog/javascript2.jpg' alt='Coding in Javascript'>
+</figure>
 
 ‌
 
