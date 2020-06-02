@@ -100,14 +100,41 @@ Prior to ECMAScript 2015 we were limited to two levels of scope within our progr
 Conceptually global scope is the outermost scope in a js program. It is where js exposes built-ins, the DOM, the console, and environment features like setTimeout(). Prior to ES modules the global scope was often the glue between separate js files, and created a space for them to cooperate. The global scope varies in definition and behavior depending on the JS environment, and the actual outermost scope may not always be the global scope we are expecting, it's important to familiarize yourself with what outermost in for the environment you are working without making these assumptions. Functions and variables defined within the global scope are accessible throughout the program. Even though defining global objects allows for easy access to our functions and variables it in not good practice to crowd our namespace with global variables as we will see and understand why narrower scopes are recommended when we review the Principle of Least Exposure.
 
 ### Local Scopes - Function, Block, and Implied Scope
-Within the global scope our local scopes will be nested, the most common forms of local scope are Function Scopes, and Block Scopes.  
+Within the global scope our local scopes will be nested, the most common forms of local scope are function scopes, and block scopes. 
+```
+// scope levels and types
+
+var thisGlobalVariable = "This is a Global variable, declared outside of all blocks and functions, in the global namespace."
+
+function printMyScopeMessages(){
+  var thisFunctionScopedVariable = "I am function scoped. Im local to the function scope."
+  if (typeof thisFunctionScopedVariable === 'string') {
+    let thisBlockScopedVariable = "I am blocked scoped, and Im a mutable local variable."
+    const anotherBlockScopedVariable = "I'm block scoped, and Im a fixed local variable"
+    console.log(thisBlockScopedVariable);
+    console.log(anotherBlockScopedVariable);
+  }
+  console.log(thisFunctionScopedVariable);console.log(thisGlobalVariable);
+}
+
+printMyScopeMessages();
+
+
+#=> 
+I am blocked scoped, and Im a mutable local variable.
+I block scoped, and Im a fixed local variable
+I am function scoped. Im local to the function.
+This is a Global variable, declared outside of all blocks and functions, in the global namespace.
+ 
+
+```
 
 A local scope is any scope nested within the global scope. This could be either type, function scope or a block scope. Variables and function declared within our local scope will only be visible with this local container. Function scopes refer specifically to objects that are only accessible from the function level inwards and to the nested children of the current function scope.
 
 Block scopes were introduced in 2015 with the creation of let and const variable types.  Though syntactically there are many cases that we use curly braces in our JS programs, these code blocks do not qualify as block scopes until a variable to be contained is declared within them. Object literals, function declarations, try...catch statements, and classes are a few examples of blocks that do not qualify as block scopes. It's important to remember never to define functions within blocks, because they be unpredictable and their behavior will vary across JS environments. Block scoping is useful for increasing code readability, narrowing our variable scopes, and reducing the potential for Temporal Dead Zone Errors which we will explore shortly.
 
 Less commonly familiar are implied scopes. Scopes that have been implicitly and created that may cause strange bugs and unexpected side effects if we are not aware of their creation. One implied scope to watch out for is the parameter scope created when when we use non simple parameters as function argument. Since default arguments classify as non-simple arguments we can unintentionally  create a parameter scope nested between a function's parent scope and the function's inner scope which could lead to accidentally variable shadowing.  Another potential implied scope is the nested scope created between by the name identifier of a function expression nested between function's inner scope and the expression's outer enclosing scope. It is important to be aware of how these implied scopes may be created to control any side effects they may have in our program.
-<!--code example-->
+
 Now that have a clear understanding of when javascript determines scope, how to use different types of scopes and how different variable types behave we can start exploring how we can use these concepts to construct better programs.
 
 ## Principle of Least Exposure
@@ -171,12 +198,34 @@ Because the compiler will search for the first declarator matching the variable 
 
 Var cannot legally shadow a Let variable, this would require a scope boundary crossing that JS won't allow, however Let as the inner scope can always shadow Var as the outer scope.
 
+```
+// legal variable shadowing
+
+var shadowedVariable = "I'm the original unshadowed value!";
+
+function shadowOuterScopeVariable(someParameters){
+  var shadowedVariable = "Now I'm Shadowed!";
+  console.log('Here are some parameters: ' + someParameters);
+  console.log(shadowedVariable);
+}
+
+console.log(shadowedVariable);
+shadowOuterScopeVariable('abcdefg');
+
+#=>
+I'm the original unshadowed value!
+Here are some parameters: abcdefg
+Now I'm Shadowed!
+
+```
+
 I can't think of many reasons why you want to intentionally use variable shadowing. It could be helpful during testing, making changes to legacy code or for concealing data from a public interface but in general, its important to recognize, to prevent unintentional shadowing. It makes far more sense to create a new variable with a different name if you are allocating a different value, in general name sharing is a bad practice unless you have a good reason for it.
+
 
 <!-- syntax example -->
 <figure>
-  <img src="harleighabel.com/img/blog/eclipse-panaromic.jpg" alt='Panaroma of an elipse representing variable shadowing'>
-  <figcaption>Panaroma of eclipse as a visual representation of Variable Shadowing </figcaption>
+  <img src="harleighabel.com/img/blog/eclipse-panaromic.jpg" alt='Panorama of an elipse representing variable shadowing'>
+  <figcaption>Panorama of eclipse as a visual representation of Variable Shadowing </figcaption>
 </figure>
 ## Function Scopes and Behaviors
 ********************************
@@ -239,7 +288,39 @@ Closures can only truly be defined as closures if they can be observed, which me
 
 Kyle Simpson's mental model most accurately describes closures as "a function instance and its scope environment preserved in-place while any references or variables to it are passed around and invoked from other scopes.'
 
-Closure syntax example
+```
+
+// example of closures
+
+function outerFunction(someArgs, someNum){
+  var variablePreservingState;
+  function innerFunction(x){
+    console.log(someArgs);
+    return x + someNum;
+  }
+  return innerFunction;
+}
+
+var firstNum = 12;
+var secondNum = 2;
+var thirdNum = 1;
+var fourthNum = 3;
+
+var variableWillHold14 = outerFunction('Hello, Gorgeous!', firstNum)
+
+var variableWillHold4 = outerFunction('Hey, Smarty Pants!', thirdNum)
+
+console.log(`This variable will hold the accumulated value: ` + variableWillHold14(secondNum));
+
+console.log(`This variable will hold the accumulated value: ` + variableWillHold4(fourthNum));
+
+#=> 
+Hello, Gorgeous!
+This variable will hold the accumulated value: 14
+Hey, Smarty Pants!
+This variable will hold the accumulated value: 4
+ 
+```
 
 Quick review: outer function, nested inner function, variable passed from outer function to inner function to maintain state, inner function exposes variable through return statement, scope external to outer function accesses inner data and variables.
 Now that we've explore closures understand lets move on to modules.
