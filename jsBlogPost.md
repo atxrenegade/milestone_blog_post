@@ -292,7 +292,12 @@ Kyle Simpson's mental model most accurately describes closures as "a function in
 
 // example of closures
 
-function outerFunction(someArgs, someNum){
+var firstNum = 1;
+var secondNum = 2;
+var thirdNum = 3;
+var fourthNum = 4;
+
+function outerFunction(someArgs, someNum) {
   var variablePreservingState;
   function innerFunction(x){
     console.log(someArgs);
@@ -301,24 +306,19 @@ function outerFunction(someArgs, someNum){
   return innerFunction;
 }
 
-var firstNum = 12;
-var secondNum = 2;
-var thirdNum = 1;
-var fourthNum = 3;
+var variableEqualsFOUR = outerFunction('Hello, Gorgeous!', firstNum)
 
-var variableWillHold14 = outerFunction('Hello, Gorgeous!', firstNum)
+var variableEqualsSIX = outerFunction('Hey, Smarty Pants!', secondNum)
 
-var variableWillHold4 = outerFunction('Hey, Smarty Pants!', thirdNum)
+console.log(`This variable will hold the accumulated value: ` + variableEqualsFOUR(thirdNum));
 
-console.log(`This variable will hold the accumulated value: ` + variableWillHold14(secondNum));
-
-console.log(`This variable will hold the accumulated value: ` + variableWillHold4(fourthNum));
+console.log(`This variable will hold the accumulated value: ` + variableEqualsSIX(fourthNum));
 
 #=> 
 Hello, Gorgeous!
-This variable will hold the accumulated value: 14
-Hey, Smarty Pants!
 This variable will hold the accumulated value: 4
+Hey, Smarty Pants!
+This variable will hold the accumulated value: 6
  
 ```
 
