@@ -102,7 +102,7 @@ Conceptually global scope is the outermost scope in a js program. It is where js
 ### Local Scopes - Function, Block, and Implied Scope
 Within the global scope our local scopes will be nested, the most common forms of local scope are function scopes, and block scopes. 
 ```
-// scope levels and types
+// levels of scope
 
 var thisGlobalVariable = "This is a Global variable, declared outside of all blocks and functions, in the global namespace."
 
@@ -110,7 +110,7 @@ function printMyScopeMessages(){
   var thisFunctionScopedVariable = "I am function scoped. Im local to the function scope."
   if (typeof thisFunctionScopedVariable === 'string') {
     let thisBlockScopedVariable = "I am blocked scoped, and Im a mutable local variable."
-    const anotherBlockScopedVariable = "I'm block scoped, and Im a fixed local variable"
+    const anotherBlockScopedVariable = "I'm block scoped, and Im a fixed local variable."
     console.log(thisBlockScopedVariable);
     console.log(anotherBlockScopedVariable);
   }
@@ -119,11 +119,10 @@ function printMyScopeMessages(){
 
 printMyScopeMessages();
 
-
-#=> 
+//=>
 I am blocked scoped, and Im a mutable local variable.
-I block scoped, and Im a fixed local variable
-I am function scoped. Im local to the function.
+I block scoped, and Im a fixed local variable.
+I am function scoped. Im local to the function scope.
 This is a Global variable, declared outside of all blocks and functions, in the global namespace.
  
 
