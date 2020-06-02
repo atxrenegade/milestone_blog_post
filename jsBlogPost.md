@@ -30,53 +30,58 @@ But why do we care? Isn't JavaScript an interpreted language? It was... in the b
 
 ## JS Engine and the Runtime Environment
 
-There are two important components involved at runtime, the JavaScript engine, and the runtime environment that the engine operates within. Each browser uses it's own engine as they compete for speed and efficiency. You've probably heard of the popular ones, V8 for Google Chrome, Karma for Internet Explorer, Nitro for Safari and Firefox( Developer Edition - my personal preference) uses Spider Monkey.  While JS can still be executed with an interpreter, it is more commonly processes by these browsers and their fine tuned engines using complex processes for asynchronously compiling, optimizing and executing source code through multiple threads within the runtime environment.
+There are two important components involved at runtime, the JavaScript engine, and the runtime environment that the engine operates within. Each browser uses it's own engine as they compete for speed and efficiency. You've probably heard of the popular ones, V8 for Google Chrome, Karma for Internet Explorer, Nitro for Safari and FirefoxDeveloper Edition - my personal preference) uses Spider Monkey.  While JS can still be executed with an interpreter, it is more commonly processes by these browsers and their fine tuned engines using complex processes for asynchronously compiling, optimizing and executing source code through multiple threads within the runtime environment.
 
 So what is the runtime environment? The runtime environment, is the environment that your code is executed in. It is generally the collection of libraries, tools, and support systems available within the runtime space. Some of these tools and services include the server environment, your desktop environment, the browser, the js engine, the core library, etc.. This also where the event loop is implemented. 
 
 ## Three Stage Compilation
-
 Now that we understand that JS uses a combination of both compilation and interpretation known as "just in time compiling", we are going to take a closer look at the compilation phase to better understand scope and variable behavior. Again, compilation is preprocessing of source code into machine code, it is during this phase that JS engine creates a map of scopes and identifiers that determine the availability of our functions and variables. In JavaScript the compilation of our code occurs literal nanoseconds before the engines executes the translated code, so in order to facilitate this process it is broken down into three stages: 
 
   • Stage One: Tokenizing/Lexing
   • Stage Two: Parsing
   • Stage three: Code Generation
 
-In the first stage of compilation, lexical analysis and tokenizing refers to the process in which the engine analyzes our syntax and breaks it down into 'tokens'. Tokens are just strings with assigned meanings we recognize them as identifiers, keywords, operators, literals, comments, etc.
+ ### Tokenizing/Lexing - Compilation - Stage 1 
 
-Once the source code has been lexed/tokenized, the engine parses the code to create an abstract tree representation (AST). The AST is a data structure that tells our compiler
+In the first stage of compilation, lexical analysis and tokenizing refers to the process in which the engine analyzes our syntax and breaks it down into 'tokens'. Tokens are just strings with assigned meanings that we recognize as identifiers, keywords, operators, literals, comments, etc.
+
+JS engines separate the registration of variables and functions to their scope, and the value assignment of those objects into two distinctly different operations. During the lexing phase when our JS engine reaches an identifier in our code it determines whether the variable identifier qualifies as a TARGET or a SOURCE. A TARGET points to, creates a reference to a variable value. A TARGET identifier is like the sign pointing to the container storing our value, while the SOURCE is the bucket holding the actual value. Another analogy for it is the left hand side vs right hand side of an equation. The right hand side of an expression would be the TARGET, and the left hand side would refer to the SOURCE. When the engine reaches a TARGET during the lexing phase it will register the identifier to its scope, but if the identifier is determined to be a SOURCE it will defer value assignment until the execution phase. While scope is mapped out during compilation, it is not CREATED until runtime when a new instance of our scope is called or invoked.
+
+Once a variable scope is set during compilation it cannot be altered at runtime. That being said in programming there seem to be corner cases for everything. Some exceptions here include cases that a scope may not be 'set' during compilation when the identifier references a JS object that is defined in an external file or module and not available for 'lookup' until after these files are loaded at runtime. Another deviation from convention is that scope MAY be altered at runtime through the use of the WITH keyword or the eval() in non-strict mode. These are both exceptions to the rules and the later is not good coding practice and should be avoided. 
+
+### Parsing and Code Generation - Compilation - Stages 2 & 3
+Once the source code has been tokenized, the JS engine parses our token array to create an abstract syntax tree representation of our program(AST). The AST is data structure that is an intermediate representation of our program prior to code generation, it tells our compiler what the structural details of our program will be. The final stage of compilation is the code generation stage when the AST is converted into machine instructions to be executed by the JS engine at runtime.
+ 
+## The Execution Phase and the Event Loop
+Once code has been compiled it is ready to be executed. JavaScript is described as asynchronous, single threaded and non-blocking. So what does that mean exactly? 
+
+While JS engines and environments use multi-threaded processes, the actual execution of our program is single threaded. This means that as our compiled code is executed, each process is carried out to completion before moving on to the next line of code, so only one thread(process) is executed at a time. But isn't that blocking/synchronous in nature? Yes, single threaded processes are blocking ARE synchronous and the JS language itself matches both of these characteristics. JavaScript has one memory heap (just as it sounds a heap of memory), and a single call stack (think of call stack as a stack of tasks that have to be executed in the order of first in, last out) and JS programs are executed in order line by line. The non blocking nature of our programs is a feature provided by the Runtime Environment. 
+
+There is recent evidence to suggest the attention span of human beings has dropped to below that of a goldfish (so congrats if you've made it this far in this blog post). While goldfish have exhibited a measured attention span of 8 seconds, human being have been clocking in at only 7 seconds. Imagine how synchronous blocking tasks would affect our audience and their user experience if every time they loaded a webpage, or used a feature, that they had to wait for each task to fully execute before moving on. If you remember the days of dial-up this won't be a stretch for your imagination but in this day and age of user's expectations it is unlikely they will stick around for long lags in our program execution.
+
+I prefer to think of synchronous JS in terms of a Pizza Party. Imagine everyone was having a great time until it was time to order food. One friend is allocated the task of ordering and picking up the pizza for everyone at the local pizza joint. Designated friend decides they don't want to miss any of the fun, and insists that everybody and in the party stops what they are doing and waits exactly as they, are until the friend returns.  Forty-five minutes later, friend returns with a stack of hot cheesy pizzas to an empty house, when the party goers tired of waiting left got tired of waiting they left. You'd likely have the same experience with your users without the event loop to manage blocking tasks in your code.
+
+The event loop is a model we use to describe how the environment manages events at runtime. When the JS engine is executing our code the environment event loop separates tasks into two categories, those to be immediately executed and callback events. As our program is executed line-by-line non blocking scripts are sent to the execution stack and executed immediately in consecutive order, and when the js engine reaches a line of code containing a callback event, this event is placed in a separate event handler queue in the order that they these events occur. Once the JS engine has executed everything in the execution stack, it will begin processing the tasks waiting in the event queue. This allows for asynchronous event handling in our programs by allowing non blocking scripts to be executed before processing callback events. Again this is high-level overview for a basic knowledge of these concepts and I recommend a deeper exploration into the javascript event loop for a better understanding.
+
+## Hoisting and the Dead Zone
+
+### What is hoisting?
+There seem to be a fair few concepts in JS that create confusion and uncertainty among programmers and hoisting is certainly one of them. The non programming definition of "hoisting" is simply the raising or elevating of one thing over another.  In the JS context hoisting 
+
+refers the to registration of a variable identifier at the top of the scope it is declared in. If we look back at how and when our js engines determine variable and function scope we will remember that the registration of variables occurs during compilation, and the value assignment occurs during the execution phase. So how does that reflect in our programs? Well, it depends on the variable type and this is where we will the behavioral differences between Var, Let and Const can be observed.
+
+To begin with, ALL variable declarators are hoisted to the top of their scope at runtime, despite what you may have heard. Variables declared with the keyword Var will be registered, and immediately initiatied with a default value of 'undefined' making them immediately available for use, albiet they will not reflect our intended value until the engine reaches the line of code with out variable value assignment.  
+
+If the variable 
 
 
-### Code Generation
-**** describe code generation phase
-turns AST into executable code - intermediate representation of the program
+It means that during execution or identifiers and there scopes have already been determined but their values have not, and wont be accessible until the engine executes the line of code that 
 
 
-What significance does this have to us as developers?
-Aside from a few corner cases scope is determined 
+FUNCTION TYPES
 
 
-On to the Execution Phase
-Once code has been compiled it is ready to be executed.  JavaScript execution is described as asynchronous, single threaded and non-blocking. So what does that mean exactly? 
 
-While js engines and environments use multi-threaded processes, the actual execution of js is single threaded. This means that as the compiled code is executed, each process is carried out to completion before moving on to the next, only one thread is executed at a time. But isn't that blocking/synchronous in nature? While, technically yes. It does. JS in fact has one memory heap (just like it sounds a heap of memory), and a single call stack (think of call stack as a stack of tasks that have to be executed in the order of first in, last out). 
-
-Event loop. 
-
-Pizza Party Analysis 
-
-Days of dial up are over, attention span of a goldfish, goldfish - 8 seconds, human 7 seconds
-
-
-So that was a lot of information.  If you are following let's get back to why? WHy? WHy? Why do we care? Why does this matter to a developer working at a web application level?  
-
-So why is this relevant?
- SO I can tell you that JS is an async single threaded non blocking language that 
-It helps us understand hoisting, variable and function behavior, and ....... like asynchronous JS.
-scope is mapped out during compilation,  a new instance is created at runtime whenever called or invoked.  
-scope is mostly determined during compilation (corner cases modules where the variable or function has been loaded yet), which mean they cannot be altered at runtime. more compiled than not,  important to understand
-
-Where do targets and source fit in?
 
 ## Lexical Scope and Scope Chain
 
@@ -90,35 +95,32 @@ Lexical scoping is a reference to scope that is determined during the lexing pha
 The scope chain is the relationship scopes have each other. Scopes are nested one within another fully enclosed forming a chain of scopes like similar to the layers of an onion or a set of russian nesting dolls. This scope chain created at compile time is how the interpreter connects an identifier with the declaration that informs the interpreter of what that identifiers scope will be. As we learned in the compilation section, the compiler determines scope at in during the lexing phase while the interpreter handles assignment during execution.
 
 When an interpreter reaches and identifier it searches the scope level it is in for a declaration matching that identifier. If no identifier is found within the current scope it moves up and outward to the parent scope to search for a match.  The scope chain in one directional and ALWAYS moves only in an outward and upward direction from innermost to outermost scope. As the interpreter continues its search for a matching declaration it continues through each scope level until it reaches the global scope.  The interpreter cannot assign a value to an undeclared variable or function and will throw and error, or create a variable depending on the mode the programming is running in. If our function or program is operating within strict mode and the interpreter does not find a match and an accidental global variable is created. If we are running in strict mode a reference error will be thrown. 
-
-<image of RUSSIAN NEsting dolls>
+<!--image of RUSSIAN NEsting dolls-->
 
 ### Levels of scope 
 Prior to ECMAScript 2015 we were limited to two levels of scope within our programs: the Global scope, and the Function scope. Block scoping did not become available until let and const were introduced in ES6.
 
-### Global Scope
-Global scope is the outermost scope in a js program.  Global scope is significant because it is the 'glue' between modules, it is the scope that we use to import external files and libraries into our program, and it is also where js exposes built-ins, the DOM, the console, and environment features like setTimeout(). The globalScope varies in definition and behavior depending on the JS environment, and the actual outermost scope may not always be the global scope object. Functions and variables defined within the global scope are accessible throughout the program. Even though defining global objects allows for easy access to our functions and variables it in not good practice to crowd our namespace with global variables as we will see and understand why narrower scopes are recommended when we review the Principle of Least Exposure.
+### Global Scope 
+Conceptually global scope is the outermost scope in a js program. It is where js exposes built-ins, the DOM, the console, and environment features like setTimeout(). Prior to ES modules the global scope was often the glue between separate js files, and created a space for them to cooperate. The global scope varies in definition and behavior depending on the JS environment, and the actual outermost scope may not always be the global scope we are expecting, it's important to familiarize yourself with what outermost in for the environment you are working without making these assumptions. Functions and variables defined within the global scope are accessible throughout the program. Even though defining global objects allows for easy access to our functions and variables it in not good practice to crowd our namespace with global variables as we will see and understand why narrower scopes are recommended when we review the Principle of Least Exposure.
 
 ### Local Scopes - Function, Block, and Implied Scope
-Within the global scope we can nest our local scopes, the most common types of local scope are Function Scopes, and Block Scopes.  
+Within the global scope our local scopes will be nested, the most common forms of local scope are Function Scopes, and Block Scopes.  
 
 A local scope is any scope nested within the global scope. This could be either type, function scope or a block scope. Variables and function declared within our local scope will only be visible with this local container. Function scopes refer specifically to objects that are only accessible from the function level inwards and to the nested children of the current function scope.
 
 Block scopes were introduced in 2015 with the creation of let and const variable types.  Though syntactically there are many cases that we use curly braces in our JS programs, these code blocks do not qualify as block scopes until a variable to be contained is declared within them. Object literals, function declarations, try...catch statements, and classes are a few examples of blocks that do not qualify as block scopes. It's important to remember never to define functions within blocks, because they be unpredictable and their behavior will vary across JS environments. Block scoping is useful for increasing code readability, narrowing our variable scopes, and reducing the potential for Temporal Dead Zone Errors which we will explore shortly.
 
-Less commonly familiar are implied scopes. Scopes that have been implicitly and created that may cause strange bugs and unexpected side effects if we are not aware of their creation. One implied scope to watch out for is the parameter scope created when when we use non simple parameters as function argument. Since default arguments classify as non-simple arguments we can unintentionally  create a parameter scope nested between a function's parent scope and the function's inner scope which could lead to accidentally variable shadowing.  Another potential implied scope is the nested scope created between a function expression and the name identifier of function expression's definition. It's important to be aware of how these implied scopes may be created to control any side effects they may have in our program.
-
-<code example>
-
+Less commonly familiar are implied scopes. Scopes that have been implicitly and created that may cause strange bugs and unexpected side effects if we are not aware of their creation. One implied scope to watch out for is the parameter scope created when when we use non simple parameters as function argument. Since default arguments classify as non-simple arguments we can unintentionally  create a parameter scope nested between a function's parent scope and the function's inner scope which could lead to accidentally variable shadowing.  Another potential implied scope is the nested scope created between by the name identifier of a function expression nested between function's inner scope and the expression's outer enclosing scope. It is important to be aware of how these implied scopes may be created to control any side effects they may have in our program.
+<!--code example-->
 Now that have a clear understanding of when javascript determines scope, how to use different types of scopes and how different variable types behave we can start exploring how we can use these concepts to construct better programs.
 
 ## Principle of Least Exposure
 
 The Principle of Least Exposure(POLE) is a variation(or extension?)of the POLP principle (The principle of Least Privilege). It argues that function and variable access should be restricted to only to the parts of the program for which it is an absolute necessity to complete the work that that part, was designed to execute. Using encapsulation we can limit exposure creating better code organization, more secure programs, isolation of vulnerabilities, and easier updates. We implement the POLE principle by nesting our variables and functions in the smallest scope available using functions, blocks and IIFE's (Immediately Invoked Function Expressions) resulting in greater program stability, reducing the chance of naming collisions, unintended dependency, or unexpected side effects. 
 
-Since we have had a quick dive into how the JS engine compiles and interprets our program, we know that scope is determined during the lexing phase of the compilation stage. We've reviewed what types of variables can be created, and what levels of scope are available. Now lets look at how our variable types determine what scope the compiler will create for our variables.
+Since our quick journey into how the JS engine compiles and interprets our program, we know that scope is determined during the lexing phase of the compilation stage. We've reviewed what types of variables can be created, and what levels of scope are available. Now lets look at how our variable types determine what scope the compiler will create for our variables.
 
-## The Case for Var
+## Reintroducing Var
 As a new js developer I was also steered away from the use of the var variable type, and really didn't understand it myself. I "knew" that it was labelled legacy code, the black sheep in the js family that insisted on creating unpredictable bugs through a behavior called "hoisting". Beyond that I didn't really understand it, and was instructed to stick with const for all variable instances with the occasional use of let. I personally found const to be unpredictable and deceiving, claiming to be immutable yet still alterable, so steering clear of the trickery and deceit of both const and var, I defaulted to seeming safe solution of the neutral let variable type for nearly every variable I declared. Gaining a better understand of how this variables work has completely changed how I use variable declarators but before we get into the behavioral differences, let's review them.
 
 Let me re-introduce you to var perhaps you also got off on the wrong foot. Var is a sturdy variable declarator that originated in first xxxx of JS, and up until ES5 or 6? was the only flavor of JS variable came in. Var variables attach to the nearest function scope to create function scoped variables. Var is a visible differentiator from let and const in programs helping us separating function and block scoped variables from each other at a glance.  Re-declaration of var within the same scope has zero effect, making it a useful variable as a semantic reminder when there is visible distance between our original var declaration and the variable assignment, or it's use in our code. Var is also the preferred variable for for global variables, and for declaring a variable inside a loop that also also needs to be accessed externally without creating a separation between declaration and use. 
@@ -130,21 +132,22 @@ The let keyword acts very similarly to var. Let is also used to declare mutable 
 Const is reserved for declaring static variables and cannot be reassigned. Due to const's inflexibility it is best used for variables like fixed strings, or numbers. Because const cannot be reassigned, it cannot be declared without assignment, attempting to do so will result in a Syntax Error.
 
 ## Hoisting and the Dead Zone
+*****************************
 
-
+This new perspective on var and a clear unstanding of hoisting has definitely opened my eyes to the logic and reasoning behind it's intended use. Var has become my preferred function scoped variable declarator.
 
 ## Variable Shadowing
 
+Variable shadowing is the legal process of eclipsing the value of a variable declared within an enclosing scope by declaring a variable of the same name in an inner scope. It is the legal action of maintaining two variables with the same name with different values in different scopes. Due to lexical scoping the inner variable blocks the visibility of the outer variable.
+Because the compiler will search for the first declarator matching the variable identifier, it will locate and match the inner scope declaration and terminate the search beyond once the closest declarator has been found.  This conceals the original outer variable value from that point in scope inward and blocks access to it. (With the exception of Var variables and function declarations made within the global scope. They will still be accessible through the automatic property global.variableName, it is NOT recommended and can introduce bugs and create confusion in our code.)
 
+Var cannot legally shadow a Let variable, this would require a scope boundary crossing that JS won't allow, however Let as the inner scope can always shadow Var as the outer scope.
 
+I can't think of many reasons why you want to intentionally use variable shadowing. It could be helpful during testing, making changes to legacy code or for concealing data from a public interface but in general, its important to recognize, to prevent unintentional shadowing. It makes far more sense to create a new variable with a different name if you are allocating a different value, in general name sharing is a bad practice unless you have a good reason for it.
 
-
-
-
-This new perspective on var has definitely opened my eyes to the logic and reasoning behind it's intended use and become my preferred function scoped variable declarator.
-
+<!-- syntax example -->
 ## Function Scopes and Behaviors
-
+********************************
 
 
 
@@ -215,7 +218,7 @@ Now that we've explore closures understand lets move on to modules.
 
 ## ES Modules and the Module Pattern
 
-In early days of web programming, when the internet still consisted of primarily static web pages, js code was limited to single lines embedded in html to assemble web components.(-XXX confirm this) As it has slowly taken on a new role and expanded functionality to both front and back end development, and non-browser applications, javascript programs have increased in size and complexity, and with it the demand for a consistent load pattern for the use of multiple js files and resources within the same program. As our js files expand in size breaking code down into modules allow us to organize our code into smaller modular pieces, making programs easier to read, scale, debug, reuse components, implement a separation of concerns, and honor the privilege of least exposure, by encapsulating variables and methods into public and private interfaces.
+In early days of web programming, when the internet still consisted of primarily static web pages, js code was limited to single lines embedded in html to assemble web components. As it has slowly taken on a new role and expanded functionality to both front and back end development, and non-browser applications, javascript programs have increased in size and complexity, and with it the demand for a consistent load pattern for the use of multiple js files and resources within the same program. As our js files expand in size breaking code down into modules allow us to organize our code into smaller modular pieces, making programs easier to read, scale, debug, reuse components, implement a separation of concerns, and honor the privilege of least exposure, by encapsulating variables and methods into public and private interfaces.
 
 ### The Classic Module pattern 
 
@@ -226,7 +229,6 @@ In order a for module to fit the characteristics of the classic module pattern K
 1. an outer scope from that runs at least once,
 2. an inner scope that has at least one piece of hidden information
 3. must return a reference to at least one function that has closure over a hidden module state 
-
 
 Below is a syntax example I have create of the classic module pattern in from my experimental app for scopes, modules and closures, it includes the use of a function expression storing an IIFE that returns a public interface through its inner function by uses closure to make the return object keys storing stateful data. 
 
@@ -252,9 +254,9 @@ const CACHE = (function setCACHE(data) {
 ### ES Modules
 Since ES built-in modules were introduced in ES6 they have slowly found support across the browser landscape as they become the standardized native format for javascript development. As of 2020 the only browsers still lagging in adopting ES modules are: Opera, Internet Explorer, and a few less commonly known and used outliers.
 
-ESMs are fairly simple and include three lines of code to implement: an export statement in the file containing module to be exported, an import statement in the top level js file that we are importing to, and a module script statement to be include in the html file. ES Modules do not require Immediately Invoked Function, or any fancy or mystical syntax. Modules are singletons no matter how many times they are imported/exported only one instance is created at the top scope level, because ES modules are automatically created in 'strict-mode' and declarations are scoped to modules and not visible globally. Because modules are operating in strict mode and not available globally, this may limit accessibility to module features in the console and limit debugging capabilities for these objects.
+ESMs are fairly simple and include three lines of code to implement: an export statement in the file containing module to be exported, an import statement in the top level js file that we are importing to, and a module script statement to be include in the html file. ES Modules do not require Immediately Invoked Function, or any fancy or mystical syntax. Modules are singletons no matter how many times they are imported/exported only one instance is created at the top scope level, because ES modules are automatically created in 'strict-mode' and declarations are scoped to modules and not visible globally. Because modules are operating in strict mode and not available globally, this may limit accessibility to module features in the console and limit debugging capabilities for these objects. Individual ES modules are loaded into the JS environment, they then share imports/exports without the need for for a mutual outer scope. A modules top level scope is nested within the global scope, and the creation of ES modules empowers us to minimize our use and dependency on global variables and the global scope.
 
-There are several formats for including these three steps in our code, each with minor variations in syntax and functionality. Named exports are the most straightforward use of ES modules. This es module syntax is useful for exporting/importing multiple objects from one file and to the top level js file of a program using the example shorthand syntax below. Don't forget we need to include the following three steps in any module variation: load the module file with a script tag in our html file, export the module using one of the es module variations, import the module into our top level file.
+There are several ways to export/import these modules in our code, each with minor variations in syntax and functionality. Named exports are the most straightforward use of ES modules. This es module syntax is useful for exporting/importing multiple objects from one file and to the top level js file of a program using the example shorthand syntax below. Don't forget we need to include the following three steps in any module variation: load the module file with a script tag in our html file, export the module using one of the es module variations, import the module into our top level file.
 ``` 
 // Named exports: 
 
