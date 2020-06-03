@@ -107,19 +107,19 @@ Within the global scope our local scopes will be nested, the most common forms o
 var thisGlobalVariable = "This is a Global variable, declared outside of all blocks and functions, in the global namespace."
 
 function printMyScopeMessages(){
-  var thisFunctionScopedVariable = "I am function scoped. Im local to the function scope."
-  if (typeof thisFunctionScopedVariable === 'string') {
-    let thisBlockScopedVariable = "I am blocked scoped, and Im a mutable local variable."
-    const anotherBlockScopedVariable = "I'm block scoped, and Im a fixed local variable."
-    console.log(thisBlockScopedVariable);
-    console.log(anotherBlockScopedVariable);
+  var functionScoped = "I am function scoped. Im local to the function scope."
+  if (typeof functionScoped === 'string') {
+    let blockScoped = "I am blocked scoped, and Im a mutable local variable."
+    const anotherBlockScope = "I'm block scoped, and Im a fixed local variable."
+    console.log(blockScoped);
+    console.log(anotherBlockScope);
   }
-  console.log(thisFunctionScopedVariable);console.log(thisGlobalVariable);
+  console.log(functionScoped);console.log(globalVariable);
 }
 
 printMyScopeMessages();
 
-//=>
+$=>
 I am blocked scoped, and Im a mutable local variable.
 I block scoped, and Im a fixed local variable.
 I am function scoped. Im local to the function scope.
@@ -211,7 +211,7 @@ function shadowOuterScopeVariable(someParameters){
 console.log(shadowedVariable);
 shadowOuterScopeVariable('abcdefg');
 
-#=>
+$=>
 I'm the original unshadowed value!
 Here are some parameters: abcdefg
 Now I'm Shadowed!
@@ -297,7 +297,6 @@ var thirdNum = 3;
 var fourthNum = 4;
 
 function outerFunction(someArgs, someNum) {
-  var variablePreservingState;
   function innerFunction(x){
     console.log(someArgs);
     return x + someNum;
@@ -313,7 +312,7 @@ console.log(`This variable will hold the accumulated value: ` + variableEqualsFO
 
 console.log(`This variable will hold the accumulated value: ` + variableEqualsSIX(fourthNum));
 
-#=> 
+$=> 
 Hello, Gorgeous!
 This variable will hold the accumulated value: 4
 Hey, Smarty Pants!
