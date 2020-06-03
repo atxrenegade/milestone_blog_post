@@ -8,7 +8,7 @@ description: Understanding Just-In-Time Compilation,Exploring Scopes, Closures, 
 tags: #javascript #web-development #closure #hoisting #modules #jit-compilation #shadowing
 ---
 
-![Coding in Javascript](http://www.harleighabel.com/img/blog/javascript.jpg)
+![Coding in Javascript](http://www.harleighabel.com/img/blog/javascript.jpg)  
 *Coding in Javascript*
 
 
@@ -36,7 +36,7 @@ But why do we care? Isn't JavaScript an interpreted language? It was... in the b
 
 There are two important components involved at runtime, the JavaScript engine, and the runtime environment that the engine operates within. Each browser uses it's own engine as they compete for speed and efficiency. You've probably heard of the popular ones, V8 for Google Chrome, Karma for Internet Explorer, Nitro for Safari and FirefoxDeveloper Edition - my personal preference) uses Spider Monkey.  While JS can still be executed with an interpreter, it is more commonly processes by these browsers and their fine tuned engines using complex processes for asynchronously compiling, optimizing and executing source code through multiple threads within the runtime environment.
 
-![Web Browser Logos](http://www.harleighabel.com/img/blog/js_browsers.png)
+![Web Browser Logos](http://www.harleighabel.com/img/blog/js_browsers.png)  
 *Web Browser Logos*
 
   
@@ -71,7 +71,7 @@ I prefer to think of synchronous JS in terms of a Pizza Party. Imagine everyone 
 
 The event loop is a model we use to describe how the environment manages events at runtime. When the JS engine is executing our code the environment event loop separates tasks into two categories, those to be immediately executed and callback events. As our program is executed line-by-line non blocking scripts are sent to the execution stack and executed immediately in consecutive order, and when the js engine reaches a line of code containing a callback event, this event is placed in a separate event handler queue in the order that they these events occur. Once the JS engine has executed everything in the execution stack, it will begin processing the tasks waiting in the event queue. This allows for asynchronous event handling in our programs by allowing non blocking scripts to be executed before processing callback events. Again this is high-level overview for a basic knowledge of these concepts and I recommend a deeper exploration into the javascript event loop for a better understanding.
 
-![The Javascript Event Loop](http://www.harleighabel.com/img/blog/js_event_loop.gif)
+![The Javascript Event Loop](http://www.harleighabel.com/img/blog/js_event_loop.gif)  
 *The Javascript Event Loop, Image Credit: Sagore, Raul. Understanding Event Loop, Call Stack, Event & Job Queue in Javascript, 2 Jan. 2019, medium.com/@Rahulx1/understanding-event-loop-call-stack-event-job-queue-in-javascript-63dcd2c71ecd. Accessed 2 June 2020.*
 
 ## Lexical Scope and Scope Chain
@@ -87,7 +87,7 @@ The scope chain is the relationship scopes have each other. Scopes are nested on
 
 When an interpreter reaches and identifier it searches the scope level it is in for a declaration matching that identifier. If no identifier is found within the current scope it moves up and outward to the parent scope to search for a match.  The scope chain in one directional and ALWAYS moves only in an outward and upward direction from innermost to outermost scope. As the interpreter continues its search for a matching declaration it continues through each scope level until it reaches the global scope.  The interpreter cannot assign a value to an undeclared variable or function and will throw and error, or create a variable depending on the mode the programming is running in. If our function or program is operating within strict mode and the interpreter does not find a match and an accidental global variable is created. If we are running in strict mode a reference error will be thrown. 
 
-![Russian Nesting Dolls](http://www.harleighabel.com/img/blog/russian-nesting-dolls.jpg)
+![Russian Nesting Dolls](http://www.harleighabel.com/img/blog/russian-nesting-dolls.jpg)  
 *Russian dolls nested one within another as a visual representation of JavaScript scopes*
 
 ### Levels of scope 
@@ -182,7 +182,7 @@ What is the heck is the Temporal Dead Zone? In simpilest terms the TDZ is the ti
 
 This new perspective on var and a clear understanding of hoisting has definitely opened my eyes to the logic and reasoning behind it's intended use. Var has become my preferred function scoped variable declarator.
 
-![Dead Zone Logo as representation of The Temporal Dead Zone](http://www.harleighabel.com/img/blog/deadzonetitle.jpg)
+![Dead Zone Logo as representation of The Temporal Dead Zone](http://www.harleighabel.com/img/blog/deadzonetitle.jpg)  
 *Stephen King's infamous novel The Dead Zone as a reminder of the Temporal Dead Zone*
 
 ## Variable Shadowing
@@ -215,7 +215,7 @@ Now I'm Shadowed!
 
 I can't think of many reasons why you want to intentionally use variable shadowing. It could be helpful during testing, making changes to legacy code or for concealing data from a public interface but in general, its important to recognize, to prevent unintentional shadowing. It makes far more sense to create a new variable with a different name if you are allocating a different value, in general name sharing is a bad practice unless you have a good reason for it.
 
-![Panorama of an Eclipse Representing Variable Shadowing](http://www.harleighabel.com/img/blog/eclipse-panaromic.jpg)
+![Panorama of an Eclipse Representing Variable Shadowing](http://www.harleighabel.com/img/blog/eclipse-panaromic.jpg)  
 *Panorama of eclipse as a visual representation of Variable Shadowing*
 
 ## Function Scopes and Behaviors
@@ -315,7 +315,7 @@ This variable will hold the accumulated value: 6
 Quick review: outer function, nested inner function, variable passed from outer function to inner function to maintain state, inner function exposes variable through return statement, scope external to outer function accesses inner data and variables.
 Now that we've explore closures understand lets move on to modules.
 
-![Cartoon of Programming Cat](http://www.harleighabel.com/img/blog/kitty_programming.png)
+![Cartoon of Programming Cat](http://www.harleighabel.com/img/blog/kitty_programming.png)  
 *Image Credit: Artist Unknown. Cartoon Cat Programming at Night, 248006.selcdn.ru/main/iblock/910/910ad0a8b7cacf41f92ab846a684edf5/efa84859bb8636e96d68f51add2f96c4.png. Accessed 2 June 2020.*
 
 ## ES Modules and the Module Pattern
@@ -434,7 +434,6 @@ export { createNewList, buildSavedList, returnSavedList, manageGroceryList };
 import * as Storage from './modules/localStorage.js';
 Storage.manageGroceryList('addItem', 'banana', 3);
 ```
-
 
 ## Deeper Exploration
 
