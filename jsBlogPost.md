@@ -8,16 +8,23 @@ description: Understanding Just-In-Time Compilation,Exploring Scopes, Closures, 
 tags: #javascript #web-development #closure #hoisting #modules #jit-compilation #shadowing
 ---
 
+<h1> JS Under the Hood - The Fuzzy Parts | Understanding JIT Comp, Scopes, Closures, Hoisting, Shadowing, THIS, & the Module Pattern</h1>
+
 ![Coding in Javascript](http://www.harleighabel.com/img/blog/javascript.jpg)  
 *Coding in Javascript*
 
+Read Time: 32 minutes  
 
-Some of the topics explored in this post:
-• Understanding Just-In-Time Compilation
-• Exploring Scopes, Closures, Hoisting, and Shadowing 
-• Comparing Variable and Function Behavior and Types
-• Implicit vs Explicit - Rules of Precedence for determining THIS
-• The Principle of Least Exposure (POLE)
+#javascript #web-development #closure #hoisting   
+#modules #jit-compilation #shadowing  
+
+Some of the topics explored in this post:  
+
+• Understanding Just-In-Time Compilation  
+• Exploring Scopes, Closures, Hoisting, and Shadowing  
+• Comparing Variable and Function Behavior and Types  
+• Implicit vs Explicit - Rules of Precedence for determining THIS  
+• The Principle of Least Exposure (POLE)  
 • Review of the Classic Module Pattern and the ES Module Format
 
 ## Correcting Distorted Mental Models 
