@@ -7,7 +7,10 @@ description: Understanding Just-In-Time Compilation,Exploring Scopes, Closures, 
 
 tags: #javascript #web-development #closure #hoisting #modules #jit-compilation #shadowing
 ---
- <img src='www.harleighabel.com/img/blog/javascript.jpg' alt='Coding in Javascript'>
+
+![Coding in Javascript](http://www.harleighabel.com/img/blog/javascript.jpg)
+*Coding in Javascript*
+
 
 Some of the topics explored in this post:
 • Understanding Just-In-Time Compilation
@@ -33,12 +36,10 @@ But why do we care? Isn't JavaScript an interpreted language? It was... in the b
 
 There are two important components involved at runtime, the JavaScript engine, and the runtime environment that the engine operates within. Each browser uses it's own engine as they compete for speed and efficiency. You've probably heard of the popular ones, V8 for Google Chrome, Karma for Internet Explorer, Nitro for Safari and FirefoxDeveloper Edition - my personal preference) uses Spider Monkey.  While JS can still be executed with an interpreter, it is more commonly processes by these browsers and their fine tuned engines using complex processes for asynchronously compiling, optimizing and executing source code through multiple threads within the runtime environment.
 
-<figure>
-  <img src="www.harleighabel.com/img/blog/js_browsers.png" alt="Web Browser Logos">
-  <figcaption>Web Browser Logos</figcaption>
-</figure>
-                            
+![Web Browser Logos](http://www.harleighabel.com/img/blog/js_browsers.png)
+*Web Browser Logos*
 
+  
 So what is the runtime environment? The runtime environment, is the environment that your code is executed in. It is generally the collection of libraries, tools, and support systems available within the runtime space. Some of these tools and services include the server environment, your desktop environment, the browser, the js engine, the core library, etc.. This also where the event loop is implemented. 
 
 ## Three Stage Compilation
@@ -70,11 +71,8 @@ I prefer to think of synchronous JS in terms of a Pizza Party. Imagine everyone 
 
 The event loop is a model we use to describe how the environment manages events at runtime. When the JS engine is executing our code the environment event loop separates tasks into two categories, those to be immediately executed and callback events. As our program is executed line-by-line non blocking scripts are sent to the execution stack and executed immediately in consecutive order, and when the js engine reaches a line of code containing a callback event, this event is placed in a separate event handler queue in the order that they these events occur. Once the JS engine has executed everything in the execution stack, it will begin processing the tasks waiting in the event queue. This allows for asynchronous event handling in our programs by allowing non blocking scripts to be executed before processing callback events. Again this is high-level overview for a basic knowledge of these concepts and I recommend a deeper exploration into the javascript event loop for a better understanding.
 
-<figure>
-  <img src="www.harleighabel.com/img/blog/js_event_loop.gif" alt="The Javascript Event Loop Model">
-  <figcaption>The Javascript Event Loop, Image Credit: Sagore, Raul. Understanding Event Loop, Call Stack, Event & Job Queue in Javascript, 2 Jan. 2019, medium.com/@Rahulx1/understanding-event-loop-call-stack-event-job-queue-in-javascript-63dcd2c71ecd. Accessed 2 June
-  2020.</figcaption>
-</figure>
+![The Javascript Event Loop](http://www.harleighabel.com/img/blog/js_event_loop.gif)
+*The Javascript Event Loop, Image Credit: Sagore, Raul. Understanding Event Loop, Call Stack, Event & Job Queue in Javascript, 2 Jan. 2019, medium.com/@Rahulx1/understanding-event-loop-call-stack-event-job-queue-in-javascript-63dcd2c71ecd. Accessed 2 June 2020.*
 
 ## Lexical Scope and Scope Chain
 
@@ -88,10 +86,9 @@ Lexical scoping is a reference to scope that is determined during the lexing pha
 The scope chain is the relationship scopes have each other. Scopes are nested one within another fully enclosed forming a chain of scopes like similar to the layers of an onion or a set of russian nesting dolls. This scope chain created at compile time is how the interpreter connects an identifier with the declaration that informs the interpreter of what that identifiers scope will be. As we learned in the compilation section, the compiler determines scope at in during the lexing phase while the interpreter handles assignment during execution.
 
 When an interpreter reaches and identifier it searches the scope level it is in for a declaration matching that identifier. If no identifier is found within the current scope it moves up and outward to the parent scope to search for a match.  The scope chain in one directional and ALWAYS moves only in an outward and upward direction from innermost to outermost scope. As the interpreter continues its search for a matching declaration it continues through each scope level until it reaches the global scope.  The interpreter cannot assign a value to an undeclared variable or function and will throw and error, or create a variable depending on the mode the programming is running in. If our function or program is operating within strict mode and the interpreter does not find a match and an accidental global variable is created. If we are running in strict mode a reference error will be thrown. 
-<figure>
-  <img src="www.harleighabel.com/img/blog/russian-nesting-dolls.jpg" alt='Russian Nesting Dolls'>
-  <figcaption>Russian dolls nested one within another as a visual representation of JavaScript scopes </figcaption>
-</figure>
+
+![Russian Nesting Dolls](http://www.harleighabel.com/img/blog/russian-nesting-dolls.jpg)
+*Russian dolls nested one within another as a visual representation of JavaScript scopes*
 
 ### Levels of scope 
 Prior to ECMAScript 2015 we were limited to two levels of scope within our programs: the Global scope, and the Function scope. Block scoping did not become available until let and const were introduced in ES6.
@@ -185,10 +182,8 @@ What is the heck is the Temporal Dead Zone? In simpilest terms the TDZ is the ti
 
 This new perspective on var and a clear understanding of hoisting has definitely opened my eyes to the logic and reasoning behind it's intended use. Var has become my preferred function scoped variable declarator.
 
- <figure>
-    <img src="www.harleighabel.com/img/blog/deadzonetitle.jpg" alt='Dead Zone Logo as representation of The Temporal Dead Zone'>
-    <figcaption>Stephen King's infamous novel The Dead Zone as a reminder of the Temporal Dead Zone </figcaption>
-</figure>
+![Dead Zone Logo as representation of The Temporal Dead Zone](http://www.harleighabel.com/img/blog/deadzonetitle.jpg)
+*Stephen King's infamous novel The Dead Zone as a reminder of the Temporal Dead Zone*
 
 ## Variable Shadowing
 
@@ -220,12 +215,9 @@ Now I'm Shadowed!
 
 I can't think of many reasons why you want to intentionally use variable shadowing. It could be helpful during testing, making changes to legacy code or for concealing data from a public interface but in general, its important to recognize, to prevent unintentional shadowing. It makes far more sense to create a new variable with a different name if you are allocating a different value, in general name sharing is a bad practice unless you have a good reason for it.
 
+![Panorama of an Eclipse Representing Variable Shadowing](http://www.harleighabel.com/img/blog/eclipse-panaromic.jpg)
+*Panorama of eclipse as a visual representation of Variable Shadowing*
 
-<!-- syntax example -->
-<figure>
-  <img src="harleighabel.com/img/blog/eclipse-panaromic.jpg" alt='Panorama of an elipse representing variable shadowing'>
-  <figcaption>Panorama of eclipse as a visual representation of Variable Shadowing </figcaption>
-</figure>
 ## Function Scopes and Behaviors
 ********************************
 
@@ -323,12 +315,8 @@ This variable will hold the accumulated value: 6
 Quick review: outer function, nested inner function, variable passed from outer function to inner function to maintain state, inner function exposes variable through return statement, scope external to outer function accesses inner data and variables.
 Now that we've explore closures understand lets move on to modules.
 
-<figure>
-  <img src="www.harleighabel.com/img/blog/kitty_programming.png" alt='cartoon of programming cat'>
-  <figcaption>Image Credit: Artist Unknown. Cartoon Cat Programming at Night,
-  248006.selcdn.ru/main/iblock/910/910ad0a8b7cacf41f92ab846a684edf5/efa84859bb8636e96d68f51add2f96c4.png. Accessed 2 June
-  2020.</figcaption>
-</figure>
+![Cartoon of Programming Cat](http://www.harleighabel.com/img/blog/kitty_programming.png)
+*Image Credit: Artist Unknown. Cartoon Cat Programming at Night, 248006.selcdn.ru/main/iblock/910/910ad0a8b7cacf41f92ab846a684edf5/efa84859bb8636e96d68f51add2f96c4.png. Accessed 2 June 2020.*
 
 ## ES Modules and the Module Pattern
 
@@ -450,7 +438,7 @@ Storage.manageGroceryList('addItem', 'banana', 3);
 
 ## Deeper Exploration
 
-Whew. That was a lot to cover. If you are still here and want to explore these topic further I have two personal favorites I would like to share here, one specifically for in-depth exploration and another for the full breadth of web development and javascript topics. The first resource as I have already mentioned above is the "You Don't Know JS" series by Kyle Simpson, now into it's second edition. These books can be purchased in hardcover on Amazon.com, or digested for free electronically directly from the github repo: https://github.com/getify/You-Dont-Know-JS.  While the majority of the material covered in this blog post was based on "Scopes and Closure", other titles include: "Async and Performance", "Es6 & Beyond", "This and Object Prototypes", "Types and Grammar", and more. Alternatively if video instruction is more your learning style Kyle has some notable intermediate and advanced JS classes at https://frontendmasters.com.  The second resource is a github repo titled '33 Things Every Developer Should Know'. XXX add link here XXX It is a thorough list of articles and video resources for exploring everything from to 
+Whew. That was a lot to cover. If you are still here and want to explore these topic further I have two personal favorites I would like to share here, one specifically for in-depth exploration and another for the full breadth of web development and javascript topics. The first resource as I have already mentioned above is the "You Don't Know JS" series by Kyle Simpson, now into it's second edition. These books can be purchased in hardcover on Amazon.com, or digested for free electronically directly from the github repo: https://github.com/getify/You-Dont-Know-JS.  While the majority of the material covered in this blog post was based on "Scopes and Closure", other titles include: "Async and Performance", "Es6 & Beyond", "This and Object Prototypes", "Types and Grammar", and more. Alternatively if video instruction is more your learning style Kyle has some notable intermediate and advanced JS classes at https://frontendmasters.com.  The second resource is a github repo titled <a href='https://github.com/leonardomso/33-js-concepts'>'33 Concepts Every Developer Should Know'.</a> It is a thorough list of articles and video resources for exploring everything from to 
 
 Good luck on your journey. I hope I was able to clarify some of these topics for you.  If you found this blog post helpful please like it, or share it with other developers you think could benefit, and follow me on Dev.to or check out my online portfolio at http://www.harleighabel.com
 
@@ -507,10 +495,7 @@ Artist Unknown. Cartoon Cat Programming at Night, 248006.selcdn.ru/main/iblock/9
 
 Sagore, Raul. Understanding Event Loop, Call Stack, Event & Job Queue in Javascript, 2 Jan. 2019, medium.com/@Rahulx1/understanding-event-loop-call-stack-event-job-queue-in-javascript-63dcd2c71ecd. Accessed 2 June 2020.
 
-
-<figure>
-    <img src='www.harleighabel.com/img/blog/javascript2.jpg' alt='Coding in Javascript'>
-</figure>
+![Coding in Javascript](http://www.harleighabel.com/img/blog/javascript2.jpg)
 
 ‌
 
