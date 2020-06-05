@@ -160,37 +160,26 @@ Const is reserved for declaring static variables and cannot be reassigned. Due t
 ## Hoisting and the Dead Zone
 
 ### What is hoisting?
-There seem to be a fair few concepts in JS that create confusion and uncertainty among programmers and hoisting is certainly one of them. The non programming definition of "hoisting" is simply the raising or elevating of one thing over another.  In the JS context, "hoisting" refers to the fact that all variable declarations are visible at the top of the scope they are declared in. So how does that reflect in our programs? Well, it depends on the variable type and this is where we can observe behavioral differences between Var, Let and Const.
+HOISTING, another JS concept shrouded with mystery and confusion. The non programming definition of "hoisting" is simply the raising or elevating of one thing over another.  In the JavaScript context, "hoisting" refers to the fact that all variable declarations are visible at the top of the scope they are declared in. So how does that reflect in our programs? Well, it depends on the variable type and this is where we observe behavioral differences between Var, Let and Const.
 
-variable three stages declaration, initialization, and assignment
+There are three steps in the creation of a function or variable, these are declaration, initialization and value assignment. Since our identifiers are registered in the compilation phase our scopes have been predetermined and at runtime the engine already has already processed what our scope will be but still has not necessarily executed the lines of code determining these object values. 
 
-refers the to registration of a variable identifier at the top of the scope it is declared in. If we look back at how and when our js engines determine variable and function scope we will remember that the registration of variables occurs during compilation, and the value assignment occurs during the execution phase. 
+refers the to registration of a variable identifier at the top of the scope it is declared in. If we look back at how and when our js engines determine variable and function scope we will remember that the registration of variables occurs during compilation, and the value assignment occurs during the execution phase. After a JS object has been declared, it must be initialized before it can be used and assigned a value, otherwise it will result in error, or return a different value that we are expecting.
 
-To begin with, ALL variable declarators are hoisted to the top of their scope at runtime, despite what you may have heard. Variables declared with the keyword Var will be registered, and immediately initiatied with a default value of 'undefined' making them immediately available for use, albiet they will not reflect our intended value until the engine reaches the line of code with out variable value assignment.  
+Variables declared with the keyword Var will be registered, and immediately auto-initialized and assigned a default value of 'undefined'. This means they are available for immediate use in our programs, albeit they will not reflect our intended value until the engine reaches the line of code that contains our variable value assignment. 
 
-If the variable 
+If the variable is declared using Let or Const, the variable is registered, but NOT auto-initialized and NOT assigned a value until the value assignment line of code is reached. Even though the engine has mapped the scope for these variables attempting to use them before value assignment will throw an error. Unknowingly you have crossed into the DEAD ZONE! (♫♪♪ dah, dah, dah - morbid organ music playing ominously ♫♪♪). 
 
-This means that we can reference a variable in that scope before we reach the line of code containing the variable declaration.
-It means that during execution or identifiers and there scopes have already been determined but their values have not, and wont be accessible until the engine executes the line of code that 
-
-
-
-### The TDZ and How Hoisting Affects Our Variable Behavior
-
-VAR - 
-
-
-LET - 
-
-CONST - 
-
-
-What is the heck is the Temporal Dead Zone? In simpilest terms the TDZ is the time period between a variable or function declaration and the when it is auto-initialized and available for use. Any variable that has been initialized yet cannot be used and will throw a XXXXX error.  To prevent errors we also declare variables at the top of their scope, and while Var variables are available for use immeditaily it is  
-
-This new perspective on var and a clear understanding of hoisting has definitely opened my eyes to the logic and reasoning behind it's intended use. Var has become my preferred function scoped variable declarator.
+The TEMPORAL DEAD ZONE! (cackles and screams in the distance)
 
 ![Dead Zone Logo as representation of The Temporal Dead Zone](http://www.harleighabel.com/img/blog/deadzonetitle.jpg)  
 *Stephen King's infamous novel The Dead Zone as a reminder of the Temporal Dead Zone*
+
+### The TEMPORAL DEAD ZONE
+What is the heck is the Temporal Dead Zone? In simplest terms the TDZ is the time period between a variable or function declaration and the when it is auto-initialized and available for use. To prevent Temporal Dead Zone errors we declare all variables at the top of their scope. 
+
+This fresh perspective on Var, and a clear understanding of hoisting has definitely opened my eyes to the logic and reasoning behind it's intended use and Var has become quickly become my preferred function scoped variable declarator.
+
 
 ## Variable Shadowing
 
